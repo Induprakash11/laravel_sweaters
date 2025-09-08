@@ -1,0 +1,13 @@
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+</IfModule>
+
+<IfModule mod_autoindex.c>
+    Options +Indexes
+</IfModule>
+
+# ✅ Allow access to all files
+<Files *>
+    Order allow,deny
+    Allow from all
+</Files>
