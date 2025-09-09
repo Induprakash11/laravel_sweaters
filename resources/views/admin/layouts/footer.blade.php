@@ -1,9 +1,9 @@
 <footer class="footer d-block d-md-flex justify-content-between text-md-start text-center">
-                    <p class="mb-md-0 mb-1">Copyright &copy; <script >document.write(new Date().getFullYear())</script> <a href="javascript:void(0);" class="link-primary text-decoration-underline">CRMS</a></p>
+                    <p class="mb-md-0 mb-1">Copyright &copy; <script >document.write(new Date().getFullYear())</script> <a href="https://idreamdevelopers.com/" target="_blank" class="link-primary">Idreamdevelopers</a></p>
                     <div class="d-flex align-items-center gap-2 footer-links justify-content-center justify-content-md-end">
-                        <a href="">About</a>
+                        {{-- <a href="">About</a>
                         <a href="">Terms</a>
-                        <a href="">Contact Us</a>
+                        <a href="">Contact Us</a> --}}
                     </div>
                 </footer>
                 <!-- End Footer -->
@@ -26,6 +26,7 @@
         <script src="{{ asset('plugins/simplebar/simplebar.min.js') }}" ></script>
 
         <!-- Datatable JS -->
+        <script type="text/javascript" src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
         <script src="{{ asset('plugins/datatables/js/jquery.dataTables.min.js') }}" ></script>
         <script src="{{ asset('plugins/datatables/js/dataTables.bootstrap5.min.js') }}" ></script>
 

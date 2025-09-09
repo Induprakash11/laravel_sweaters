@@ -24,14 +24,28 @@
             <!-- Start Content -->
             <div class="content pb-0">
                 <!-- Page Header -->
-                <div class="mb-4">
-                    <h4 class="mb-1">Blogs</h4>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0 p-0">
-                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">View Blogs</li>
-                        </ol>
-                    </nav>
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-4 flex-wrap">
+                    <div>
+                        <h4 class="mb-1">Blogs<span class="badge badge-soft-primary ms-2">{{ count($blogs) }}</span>
+                        </h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-0 p-0">
+                                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Manage Blogs</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="gap-2 d-flex align-items-center flex-wrap">
+                        <a href="javascript:void(0);" class="btn btn-icon btn-outline-light shadow refresh-btn"
+                            data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Refresh"
+                            data-bs-original-title="Refresh">
+                            <i class="ti ti-refresh"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="btn btn-icon btn-outline-light shadow"
+                            data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Collapse"
+                            data-bs-original-title="Collapse" id="collapse-header"><i
+                                class="ti ti-transition-top"></i></a>
+                    </div>
                 </div>
                 <!-- End Page Header -->
 
@@ -47,6 +61,7 @@
                                     <i class="ti ti-plus me-1"></i>Add Blog
                                 </a>
                             </div>
+                            
                             <div class="card-body">
                                 <p class="card-title-desc">
 
@@ -91,7 +106,7 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#blogs-table').DataTable({
+            var table = $('#blogs-table').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route("blogs.index") }}',
@@ -103,6 +118,11 @@
                     { data: 'status', name: 'status' },
                     { data: 'action', name: 'action', orderable: false, searchable: false }
                 ]
+            });
+
+            // Refresh button click event
+            $(document).on('click', '.refresh-btn', function () {
+                table.ajax.reload(null, false); // false = stay on same page
             });
         });
     </script>
@@ -118,7 +138,7 @@
             </button>
         </div>
         <div class="offcanvas-body">
-            <form id="create-form" action="" enctype="multipart/form-data" method="POST">
+            <form id="create-form" enctype="multipart/form-data" method="POST">
                 @csrf
                 @method('POST')
                 <div class="row justify-content-center">
@@ -164,7 +184,7 @@
     <!-- /Add New Deals -->
 
     <!-- edit Blog -->
-    <div class="offcanvas offcanvas-end offcanvas-large" tabindex="-1" id="offcanvas_edit">
+    <div class="offcanvas offcanvas-end offcanvas-large" tabindex="-1" id="offcanvas_edit" style="width: 30%">
         <div class="offcanvas-header border-bottom">
             <h5 class="mb-0">Edit Blog</h5>
             <button type="button"
@@ -181,20 +201,20 @@
                         <div class="mb-3">
                             <label for="title-input" class="form-label">Title</label>
                             <input type="text" class="form-control" id="title-input" name="title"
-                                 placeholder="Enter title">
+                                placeholder="Enter title">
                         </div>
                     </div>
                     <div class="col-lg-10">
                         <div class="mb-3">
                             <label for="message-input" class="form-label">Message</label>
                             <input type="text" class="form-control" id="message-input" name="message"
-                                 placeholder="Enter message">
+                                placeholder="Enter message">
                         </div>
                     </div>
                     <div class="col-lg-10">
                         <div class="mb-3">
                             <label for="category-select" class="form-label">Status</label>
-                            <select class="form-select" id="status-input" name="status" >
+                            <select class="form-select" id="status-input" name="status">
                                 <option value="">Select Status</option>
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>

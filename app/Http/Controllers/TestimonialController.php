@@ -11,37 +11,37 @@ class TestimonialController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
+    {   
+        $testimonial = TestimonialReport::all();
         if ($request->ajax()) {
             return DataTables::of(TestimonialReport::query())
+                ->addColumn('id', function ($testimonial) {
+                    return $testimonial->id;
+                })
                 ->addColumn('image', function ($testimonial) {
                     return '<img src="' . asset($testimonial->image) . '" alt="" height="50" width="50">';
                 })
                 ->addColumn('action', function ($testimonial) {
                     return '<div class="d-flex gap-2">
-                        <a class="btn btn-sm btn-warning" href="' . route('testimonial.edit', $testimonial->id) . '" title="Edit"><i class="ti ti-pencil"></i></a>
-                        <form action="' . route('testimonial.destroy', $testimonial->id) . '" method="POST" style="display:inline;">
-                            ' . csrf_field() . '
-                            ' . method_field('DELETE') . '
-                            <button type="submit" class="btn btn-sm btn-danger" title="Delete"><i class="ti ti-trash"></i></button>
-                        </form>
-                    </div>';
-                })
-                ->rawColumns(['image', 'action'])
+                        <a href="' . route('testimonial.edit', $testimonial->id) . '" class="btn btn-icon btn-sm btn-warning shadow edit-btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvas_edit" data-id="' . $testimonial->id . '"><i class="ti ti-pencil"></i></a>
+                        <a class="delete-btn text-white bg-danger p-1 rounded-1" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_testimonial" data-id="' . $testimonial->id . '"><i class="ti ti-trash"></i></a>
+                        </div>';
+                    })
+                ->rawColumns(['id', 'image', 'action'])
                 ->make(true);
         }
 
-        return view("admin.testimonial.index");
+        return view("admin.testimonial.index", compact("testimonial"));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        $testimonial = new TestimonialReport();
-        return view("admin.testimonial.add", compact("testimonial"));
-    }
+    // public function create()
+    // {
+    //     $testimonial = new TestimonialReport();
+    //     return view("admin.testimonial.add", compact("testimonial"));
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -51,7 +51,7 @@ class TestimonialController extends Controller
         $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'name' => 'required|string|max:255',
-            'message' => 'required|text|max:500',
+            'message' => 'required|string|max:800',
             'rating' => 'required|integer|in:0,1,2,3,4,5',
             'status' => 'required|integer|in:0,1',
         ]);
@@ -85,17 +85,18 @@ class TestimonialController extends Controller
      */
     public function show(string $id)
     {
-       //
+        $testimonial = TestimonialReport::findOrFail($id);
+        return response()->json($testimonial);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        $testimonial = TestimonialReport::findOrFail($id);
-        return view("admin.testimonial.edit", compact("testimonial"));
-    }
+    // public function edit(string $id)
+    // {
+    //     $testimonial = TestimonialReport::findOrFail($id);
+    //     return view("admin.testimonial.edit", compact("testimonial"));
+    // }
 
     /**
      * Update the specified resource in storage.
@@ -105,7 +106,7 @@ class TestimonialController extends Controller
         $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'name' => 'string|max:255',
-            'message' => 'text|max:500',
+            'message' => 'string|max:800',
             'rating' => 'integer|in:0,1,2,3,4,5',
             'status' => 'integer|in:0,1',
         ]);
@@ -140,6 +141,11 @@ class TestimonialController extends Controller
     public function destroy(string $id)
     {
         $testimonial = TestimonialReport::findOrFail($id);
+        // Delete associated image if exists
+        if ($testimonial->image && file_exists(public_path($testimonial->image))) {
+            unlink(public_path($testimonial->image));
+        }
+
         $testimonial->delete();
         return redirect()->route("testimonial.index")->with("success","Testimonial deleted successfully");
     }

@@ -39,8 +39,8 @@ Template Name: CRMS - Bootstrap Admin Template
 
 	function init() {
 		var $this = Sidemenu;
-		$('.sidebar-menu a').on('click', function(e) {
-			if($(this).parent().hasClass('submenu')) {
+	$('.sidebar-menu a').on('click', function(e) {
+			if($(this).parent().hasClass('submenu') && $(this).next('ul').length > 0) {
 				e.preventDefault();
 			}
 			if(!$(this).hasClass('subdrop')) {

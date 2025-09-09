@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="{{ asset('plugins/simplebar/simplebar.min.css') }}">
 
     <!-- Datatable CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
     <link rel="stylesheet" href="{{ asset('plugins/datatables/css/dataTables.bootstrap5.min.css') }}">
 
     <!-- Daterangepicker CSS -->

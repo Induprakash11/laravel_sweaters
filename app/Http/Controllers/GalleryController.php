@@ -14,35 +14,35 @@ class GalleryController extends Controller
      */
     public function index(Request $request)
     {   
+        $gallery = Gallery::all();
         if ($request->ajax()) {
             return DataTables::of(Gallery::query())
+                ->addColumn('id', function ($gallery) {
+                    return $gallery->id;
+                })
                 ->addColumn('image', function ($gallery) {
                     return '<img src="' . asset($gallery->image) . '" alt="" height="50" width="50">';
                 })
                 ->addColumn('action', function ($gallery) {
                     return '<div class="d-flex gap-2">
-                        <a class="btn btn-sm btn-warning" href="' . route('gallery.edit', $gallery->id) . '" title="Edit"><i class="ti ti-pencil"></i></a>
-                        <form action="' . route('gallery.destroy', $gallery->id) . '" method="POST" style="display:inline;">
-                            ' . csrf_field() . '
-                            ' . method_field('DELETE') . '
-                            <button type="submit" class="btn btn-sm btn-danger" title="Delete"><i class="ti ti-trash"></i></button>
-                        </form>
-                    </div>';
-                })
-                ->rawColumns(['image', 'action'])
+                        <a href="' . route('gallery.edit', $gallery->id) . '" class="btn btn-icon btn-sm btn-warning shadow edit-btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvas_edit" data-id="' . $gallery->id . '"><i class="ti ti-pencil"></i></a>
+                        <a class="delete-btn text-white bg-danger p-1 rounded-1" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_gallery" data-id="' . $gallery->id . '"><i class="ti ti-trash"></i></a>
+                        </div>';
+                    })
+                ->rawColumns(['id', 'image', 'action'])
                 ->make(true);
         }
 
-        return view("admin.gallery.index");
+        return view("admin.gallery.index", compact("gallery"));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        return view("admin.gallery.add");
-    }
+    // public function create()
+    // {
+    //     return view("admin.gallery.add");
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -82,19 +82,20 @@ class GalleryController extends Controller
     /**
      * Display the specified resource.
      */
-    // public function show(string $id)
-    // {
-        
-    // }
+    public function show(string $id)
+    {
+        $gallery = Gallery::findOrFail($id);
+        return response()->json($gallery);
+    }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        $gallery = Gallery::findOrFail($id);
-        return view("admin.gallery.edit", compact("gallery"));
-    }
+    // public function edit(string $id)
+    // {
+    //     $gallery = Gallery::findOrFail($id);
+    //     return view("admin.gallery.edit", compact("gallery"));
+    // }
 
     /**
      * Update the specified resource in storage.
@@ -137,6 +138,11 @@ class GalleryController extends Controller
     public function destroy(string $id)
     {
         $gallery = Gallery::findOrFail($id);
+        // Delete associated image if exists
+        if ($gallery->image && file_exists(public_path($gallery->image))) {
+            unlink(public_path($gallery->image));
+        }
+
         $gallery->delete();
         return redirect()->route("gallery.index")->with("success","Gallery deleted successfully");
     }

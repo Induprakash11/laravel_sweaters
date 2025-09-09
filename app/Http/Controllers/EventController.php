@@ -15,36 +15,36 @@ class EventController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
+    {   
+        $events = EventReport::all();
         if ($request->ajax()) {
             return DataTables::of(EventReport::query())
+                ->addColumn('id', function ($events) {
+                    return $events->id;
+                })
                 ->addColumn('image', function ($event) {
                     return '<img src="' . asset($event->image) . '" alt="" height="50" width="50">';
                 })
                 ->addColumn('action', function ($event) {
                     return '<div class="d-flex gap-2">
-                        <a class="btn btn-sm btn-warning" href="' . route('events.edit', $event->id) . '" title="Edit"><i class="ti ti-pencil"></i></a>
-                        <form action="' . route('events.destroy', $event->id) . '" method="POST" style="display:inline;">
-                            ' . csrf_field() . '
-                            ' . method_field('DELETE') . '
-                            <button type="submit" class="btn btn-sm btn-danger" title="Delete"><i class="ti ti-trash"></i></button>
-                        </form>
-                    </div>';
-                })
-                ->rawColumns(['image', 'action'])
+                        <a href="' . route('events.edit', $event->id) . '" class="btn btn-icon btn-sm btn-warning shadow edit-btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvas_edit" data-id="' . $event->id . '"><i class="ti ti-pencil"></i></a>
+                        <a class="delete-btn text-white bg-danger p-1 rounded-1" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_event" data-id="' . $event->id . '"><i class="ti ti-trash"></i></a>
+                        </div>';
+                    })
+                ->rawColumns(['id', 'image', 'action'])
                 ->make(true);
         }
 
-        return view("admin.events.index");
+        return view("admin.events.index", compact("events"));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        return view("admin.events.add");
-    }
+    // public function create()
+    // {
+    //     return view("admin.events.add");
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -85,19 +85,20 @@ class EventController extends Controller
     /**
      * Display the specified resource.
      */
-    // public function show(string $id)
-    // {
-        
-    // }
+    public function show(string $id)
+    {
+        $events = EventReport::findOrFail($id);
+        return response()->json($events);
+    }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        $events = EventReport::findOrFail($id);
-        return view("admin.events.edit", compact("events"));
-    }
+    // public function edit(string $id)
+    // {
+    //     $events = EventReport::findOrFail($id);
+    //     return view("admin.events.edit", compact("events"));
+    // }
 
     /**
      * Update the specified resource in storage.
@@ -141,6 +142,11 @@ class EventController extends Controller
     public function destroy(string $id)
     {
         $event = EventReport::findOrFail($id);
+         // Delete associated image if exists
+        if ($event->image && file_exists(public_path($event->image))) {
+            unlink(public_path($event->image));
+        }
+
         $event->delete();
         return redirect()->route("events.index")->with("success","Event deleted successfully");
     }

@@ -33,7 +33,7 @@ class BlogController extends Controller
                 ->make(true);
         }
 
-        return view("admin.blogs.index");
+        return view("admin.blogs.index", compact("blogs"));
     }
 
     /**

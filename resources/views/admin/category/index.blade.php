@@ -24,15 +24,28 @@
             <!-- Start Content -->
             <div class="content pb-0">
                 <!-- Page Header -->
-                <div class="mb-4">
-                    <h4 class="mb-1">Category</h4>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0 p-0">
-                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">View Category</li>
-                            <li class="breadcrumb-item active" aria-current="page">View Category</li>
-                        </ol>
-                    </nav>
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-4 flex-wrap">
+                    <div>
+                        <h4 class="mb-1">Category<span
+                                class="badge badge-soft-primary ms-2">{{ count($categories) }}</span></h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-0 p-0">
+                                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Manage Category</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="gap-2 d-flex align-items-center flex-wrap">
+                        <a href="javascript:void(0);" class="btn btn-icon btn-outline-light shadow refresh-btn"
+                            data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Refresh"
+                            data-bs-original-title="Refresh">
+                            <i class="ti ti-refresh"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="btn btn-icon btn-outline-light shadow"
+                            data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Collapse"
+                            data-bs-original-title="Collapse" id="collapse-header"><i
+                                class="ti ti-transition-top"></i></a>
+                    </div>
                 </div>
                 <!-- End Page Header -->
 
@@ -92,7 +105,7 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#categories-table').DataTable({
+            var table = $('#categories-table').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route("category.index") }}',
@@ -103,6 +116,11 @@
                     { data: 'date', name: 'date' },
                     { data: 'action', name: 'action', orderable: false, searchable: false }
                 ]
+            });
+
+            // Refresh button click event
+            $(document).on('click', '.refresh-btn', function () {
+                table.ajax.reload(null, false); // false = stay on same page
             });
         });
     </script>
@@ -152,7 +170,7 @@
     <!-- /Add New Deals -->
 
     <!-- edit Catgory -->
-    <div class="offcanvas offcanvas-end offcanvas-large" tabindex="-1" id="offcanvas_edit">
+    <div class="offcanvas offcanvas-end offcanvas-large" tabindex="-1" id="offcanvas_edit" style="width: 30%">
         <div class="offcanvas-header border-bottom">
             <h5 class="mb-0">Edit Category</h5>
             <button type="button"

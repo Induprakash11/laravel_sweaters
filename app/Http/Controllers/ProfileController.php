@@ -6,11 +6,24 @@ use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\BlogReport;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
-{
+{   
+    public function index()
+    {
+        $user = Auth::user();
+        $products = Product::all();
+        $blogs = BlogReport::all();
+        $category = Category::all();
+
+        return view("admin.dashboard", compact("user", "products", "blogs", "category"));
+    }
+
     /**
      * Display the user's profile form.
      */
