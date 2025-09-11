@@ -56,10 +56,10 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
                                 <h4 class="card-title">Catgory Table</h4>
-        <a href="#" class="btn btn-primary" data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvas_add_2">
-            <i class="ti ti-plus me-1"></i>Add Category
-        </a>
+                                <a href="#" class="btn btn-primary" data-bs-toggle="offcanvas"
+                                    data-bs-target="#offcanvas_add_2">
+                                    <i class="ti ti-plus me-1"></i>Add Category
+                                </a>
                             </div>
                             <div class="card-body">
                                 <p class="card-title-desc">
@@ -67,11 +67,12 @@
                                 </p>
 
                                 <div class="table-responsive">
-        <table id="categories-table" class="table mb-0">
+                                    <table id="categories-table" class="table mb-0">
                                         <thead>
                                             <tr>
                                                 <th>Id</th>
                                                 <th>Category</th>
+                                                <th>Image</th>
                                                 <th>Status</th>
                                                 <th>Created</th>
                                                 <th>Action</th>
@@ -112,6 +113,7 @@
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'name', name: 'name' },
+                    { data: 'image', name: 'image' },
                     { data: 'status', name: 'status' },
                     { data: 'date', name: 'date' },
                     { data: 'action', name: 'action', orderable: false, searchable: false }
@@ -136,7 +138,7 @@
             </button>
         </div>
         <div class="offcanvas-body">
-            <form id="create-form" method="POST">
+            <form id="create-form" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('POST')
                 <div class="row justify-content-center">
@@ -146,6 +148,12 @@
                             <label for="category-input" class="form-label">Category</label>
                             <input type="text" class="form-control" id="category-input" name="name"
                                 placeholder="Enter Category">
+                        </div>
+                    </div>
+                    <div class="col-lg-10">
+                        <div class="mb-3">
+                            <label for="image-input" class="form-label">Image</label>
+                            <input class="form-control" type="file" id="image-input" name="image">
                         </div>
                     </div>
                     <div class="col-lg-10">
@@ -179,7 +187,7 @@
             </button>
         </div>
         <div class="offcanvas-body">
-            <form id="edit-form" method="POST">
+            <form id="edit-form" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -193,8 +201,14 @@
                     </div>
                     <div class="col-lg-10">
                         <div class="mb-3">
+                            <label for="image-input" class="form-label">Image</label>
+                            <input class="form-control" type="file" id="image-input" name="image">
+                        </div>
+                    </div>
+                    <div class="col-lg-10">
+                        <div class="mb-3">
                             <label for="category-select" class="form-label">Status</label>
-                            <select class="form-select" id="status-select" name="status">
+                            <select class="form-select" id="status-input" name="status">
                                 <option value="">Select Status</option>
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
@@ -263,7 +277,7 @@
                             // form fields
                             editForm.action = '{{ url("category") }}/' + categoryId;
                             editForm.querySelector('#category-input').value = data.name || '';
-                            editForm.querySelector('#status-select').value = data.status || '';
+                            editForm.querySelector('#status-input').value = data.status || '';
 
                             var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(editOffcanvas);
                             offcanvas.show();

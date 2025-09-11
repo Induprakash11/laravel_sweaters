@@ -38,7 +38,7 @@
                     <ul>
                         <li class="submenu">
                             <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                                <i class="ti ti-dashboard me-2"></i><span>Dashboard</span>
+                                <i class="ti ti-home "></i><span>Dashboard</span>
                             </a>
                         </li>
                         <li class="submenu">
@@ -47,11 +47,11 @@
                         </li>
                         <li class="submenu">
                             <a href="{{ route('category.index') }}" class="{{ request()->routeIs('category.index') ? 'active' : '' }}"><i
-                                    class="ti ti-layout-grid"></i><span>Category</span></a>
+                                    class="ti ti-chart-pie"></i><span>Category</span></a>
                         </li>
                         <li class="submenu">
-                            <a href="" >
-                                <i class="ti ti-dashboard"></i><span>Enquiry List</span></span>
+                            <a href="{{ route('banner.index') }}" class="{{ request()->routeIs('banner.index') ? 'active' : '' }}" >
+                                <i class="ti ti-photo "></i><span>Banners</span></span>
                             </a>
                         </li>
                         <li class="submenu">
@@ -67,7 +67,7 @@
                         </li>
                         <li class="submenu">
                             <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.index') ? 'active' : '' }}"><i
-                                    class="ti ti-report-analytics"></i><span>Event</span></a>
+                                    class="ti ti-map-pin-check"></i><span>Event</span></a>
                         </li>
                         <li class="submenu">
                             <a href="" >
@@ -76,7 +76,7 @@
                         </li>
                         <li class="submenu">
                             <a href="{{ route('testimonial.index') }}" class="{{ request()->routeIs('testimonial.index') ? 'active' : '' }}"><i
-                                    class="ti ti-quote"></i><span>Testimonial</span></a>
+                                    class="ti ti-brand-hipchat"></i><span>Testimonial</span></a>
                         </li>
                         <li class="submenu">
                             <a href="" >
