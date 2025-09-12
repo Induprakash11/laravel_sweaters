@@ -9,17 +9,16 @@
 </div> --}}
 
 <!-- main header -->
+@if($profile)
 <header class="main-header">
   <div class="header-top">
     <div class="auto-container">
       <div class="top-inner clearfix">
         <div class="top-left pull-left">
           <ul class="info clearfix">
-              @if($users)
-                <li><i class="flaticon-email"></i><a href="{{ $users->email }}">{{ $users->email }}</a></li>
-              @endif
-            <li><i class="flaticon-global"></i> Peelamedu, Coimbatore-14</li>
-          </ul>
+                <li><i class="flaticon-email"></i><a href="{{ $profile->email }}">{{ $profile->email }}</a></li>
+                <li><i class="flaticon-global"></i>{{ $profile->address }}</li>
+              </ul>
         </div>
         <div class="top-right pull-right">
           <ul class="social-links clearfix">
@@ -47,8 +46,8 @@
           <nav class="main-menu navbar-expand-md navbar-light">
             <div class="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
               <ul class="navigation clearfix">
-                <li class="current"><a href="{{ route('home') }}">Home</a></li>
-                <li class=""><a href="{{ route('about') }}">About Us</a></li>
+                <li class="{{ request()->routeIs('home') ? 'current' : '' }}"><a href="{{ route('home') }}">Home</a></li>
+                <li class="{{ request()->routeIs('about') ? 'current' : '' }}"><a href="{{ route('about') }}">About Us</a></li>
                 <li class="dropdown"><a>Pages</a>
                   <ul>
                     <li><a href="service.html">Our Service</a></li>
@@ -57,23 +56,20 @@
                 </li>
                 <li class="dropdown"><a href="">Products<span>Hot</span></a>
                   <ul>
-                    <li><a href="category-element-1.html">Category</a></li>
+                    @foreach ($category as $cate)
+                    <li><a href="{{ url('product/' . encodeId($cate->id)) }}">{{  $cate->name }}</a></li>
+                    @endforeach
                   </ul>
                 </li>
-                <li class="dropdown"><a href="">Blog</a>
-                  <ul>
-                    <li><a href="blog.html">Blog</a></li>
-                    <li><a href="blog-details.html">Blog Details</a></li>
-                  </ul>
-                </li>
-                <li><a href="{{ route('contact') }}">Contact</a></li>
+                <li class="{{ request()->routeIs('blog') ? 'current' : '' }}"><a href="{{ route('blog') }}">Blog</a></li>
+                <li class="{{ request()->routeIs('contact') ? 'current' : '' }}"><a href="{{ route('contact') }}">Contact</a></li>
               </ul>
             </div>
           </nav>
         </div>
-        <ul class="menu-right-content clearfix">
+        {{-- <ul class="menu-right-content clearfix">
           <li><a href=""><i class="flaticon-like"></i></a></li>
-        </ul>
+        </ul> --}}
       </div>
     </div>
   </div>
@@ -94,6 +90,7 @@
     </div>
   </div>
 </header>
+@endif
 <!-- main-header end -->
 
 <!-- Mobile Menu  -->
@@ -106,11 +103,9 @@
     <div class="contact-info">
       <h4>Contact Info</h4>
       <ul>
-        <li>Peelamedu, Coimbatore-14</li>
-        <li><a href="tel:+8801682648101">+91 8899006363</a></li>
-        @if($users)
-          <li><a href="{{ $users->email }}">{{ $users->email }}</a></li>
-        @endif
+        <li>{{ $profile->address }}</li>
+        <li><a href="tel: {{ $profile->mobile_number }}">{{ $profile->mobile_number }}</a></li>
+          <li><a href="{{ $profile->email }}">{{ $profile->email }}</a></li>
       </ul>
     </div>
     <div class="social-links">

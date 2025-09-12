@@ -15,7 +15,7 @@
 
         <!-- page-title -->
         <section class="page-title centred">
-            <div class="pattern-layer" style="background-image: url(assets/images/background/page-title.jpg);"></div>
+            <div class="pattern-layer" style="background-image: url({{ asset('images/background/page-title.jpg') }});"></div>
             <div class="auto-container">
                 <div class="content-box">
                     <h1>Contact us</h1>
@@ -47,30 +47,30 @@
                         <h2>Get In Touch</h2>
                         <p>Excepteur sint occaecat cupidatat non proident sunt</p>
                         <span class="separator"
-                            style="background-image: url(assets/images/icons/separator-1.png);"></span>
+                            style="background-image: url({{ asset('images/icons/separator-1.png') }});"></span>
                     </div>
                     <div class="form-inner">
-                        <form method="post" action="https://azim.commonsupport.com/Castro/sendemail.php"
-                            id="contact-form" class="default-form">
+                        <form method="post" id="contact-form" class="default-form" novalidate>
                             <div class="row">
                                 <div class="col-lg-6 col-md-12 col-sm-12 form-group">
-                                    <input type="text" name="username" placeholder="Name" required>
+                                    <input type="text" name="name" id="name" placeholder="Name" required>
                                 </div>
                                 <div class="col-lg-6 col-md-12 col-sm-12 form-group">
-                                    <input type="email" name="email" placeholder="Email" required>
+                                    <input type="email" name="email" id="email" placeholder="Email" required>
                                 </div>
                                 <div class="col-lg-6 col-md-12 col-sm-12 form-group">
-                                    <input type="text" name="subject" placeholder="Subject" required>
+                                    <input type="text" name="subject" id="subject" placeholder="Subject" required>
                                 </div>
                                 <div class="col-lg-6 col-md-12 col-sm-12 form-group">
-                                    <input type="text" name="phone" placeholder="Phone" required>
+                                    <input type="text" name="phone" id="phone" placeholder="Phone" required>
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12 form-group">
-                                    <textarea name="message" placeholder="Message"></textarea>
+                                    <textarea name="message" id="message" placeholder="Message"></textarea>
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12 form-group message-btn centred">
                                     <button type="submit" class="theme-btn-two" name="submit-form">Submit Message<i
                                             class="flaticon-right-1"></i></button>
+                                            <div id="responseMsg" class="mt-3"></div>
                                 </div>
                             </div>
                         </form>
@@ -81,6 +81,52 @@
         <!-- contact-section end -->
 
         @include('layout.footer')
+        <script>
+            $(document).ready(function () {
+                $("#contact-form").submit(function (e) {
+                    e.preventDefault();
+
+                    // Get values using IDs
+                    let name = ($("#name").val() || "").trim();
+                    let phone = ($("#phone").val() || "").trim();
+                    let email = ($("#email").val() || "").trim();
+                    let subject = ($("#subject").val() || "").trim();
+                    let message = ($("#message").val() || "").trim();
+
+                    // Basic validation
+                    if (name === "" || phone === "" || email === "" || subject === "" || message === "") {
+                        $("#responseMsg").html("<span style='color:red'>All fields are required.</span>");
+                        return false;
+                    }
+
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                        $("#responseMsg").html("<span style='color:red'>Enter a valid email address.</span>");
+                        return false;
+                    }
+
+                    // AJAX request
+                    $.ajax({
+                        url: "{{ route('contactstore') }}",
+                        method: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            name: name,
+                            phone: phone,
+                            email: email,
+                            subject: subject,
+                            message: message
+                        },
+                        success: function (response) {
+                            $("#responseMsg").html("<span style='color:green'>" + response.success + "</span>");
+                            $("#contact-form")[0].reset();
+                        },
+                        error: function (xhr) {
+                            $("#responseMsg").html("<span style='color:red'>Something went wrong.</span>");
+                        }
+                    });
+                });
+            });
+        </script>
 </body><!-- End of .page_wrapper -->
 
 </html>

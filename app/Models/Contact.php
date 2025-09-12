@@ -5,17 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Event extends Model
+class Contact extends Model
 {
     use HasFactory;
 
-    protected $table = 'event';
-    
     protected $fillable = [
-        'keyword',
-        'value',
-        'status',
+        'name',
+        'phone',
+        'email',
+        'subject',
+        'message',
     ];
-    
-    public $timestamps = false;
 }

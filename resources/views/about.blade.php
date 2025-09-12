@@ -30,12 +30,13 @@
 
 
         <!-- about-section -->
+        @if($profile)
         <section class="about-section">
             <div class="auto-container">
                 <div class="row align-items-center clearfix">
                     <div class="col-lg-4 col-md-6 col-sm-12 text-column">
                         <div class="text-inner">
-                            <h2>Simple <br /><span>&</span> Minimalistic</h2>
+                            <h2><span>{{ $profile->title }}</span></h2>
                             <h3>Secure Checkout</h3>
                             <p>Excepteur sint occaecat cupidat non proident sunt in culpa qui officia deserunt mollit
                                 anim est laborum.</p>
@@ -66,6 +67,7 @@
                 </div>
             </div>
         </section>
+        @endif
         <!-- about-section end -->
 
 

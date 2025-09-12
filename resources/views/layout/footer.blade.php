@@ -1,4 +1,5 @@
 <!-- main-footer -->
+@if ($profile)
 <footer class="main-footer">
   <div class="footer-top">
     <div class="auto-container">
@@ -53,11 +54,9 @@
                   <h3>Contact</h3>
                 </div>
                 <ul class="info-list clearfix">
-                  <li>Peelamedu, <br />Coimbatore, IN</li>
-                  <li><a href="tel:23055873407">+91 889-900-6363</a></li>
-                  @if($users)
-                    <li><a href="{{ $users->email }}">{{ $users->email }}</a></li>
-                  @endif
+                  <li>{{ $profile->address }}</li>
+                  <li><a href="tel: {{ $profile->mobile_number }}">{{ $profile->mobile_number }}</a></li>
+                    <li><a href="{{ $profile->email }}">{{ $profile->email }}</a></li>
                 </ul>
                 <ul class="footer-social clearfix">
                   @foreach($socialMediaUrl as $socialurl)
@@ -89,14 +88,15 @@
   <div class="footer-bottom">
     <div class="auto-container clearfix">
       <ul class="cart-list pull-left clearfix">
-        <li><p>Designed and Developed By <a href="" class="text-danger">Idreamdevelpoer</a></p></li>
+        <li><p>Designed and Developed By <a href="{{ $profile->company_site }}" class="text-danger">Idreamdevelpoer</a></p></li>
       </ul>
       <div class="copyright pull-right">
-        <p><a href="" class="text-primary">Sweaters India</a> &copy; 202 All Right Reserved</p>
+        <p><a href="" class="text-primary">{{ $profile->title }}</a> &copy; 202 All Right Reserved</p>
       </div>
     </div>
   </div>
 </footer>
+@endif
 <!-- main-footer end -->
 
 
@@ -108,6 +108,7 @@
 
 
 <!-- jequery plugins -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ asset('js/jquery.js') }}"></script>
 <script src="{{ asset('js/popper.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap.min.js') }}"></script>

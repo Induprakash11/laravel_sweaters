@@ -45,8 +45,9 @@
                         <div class="col-lg-3 col-md-6 col-sm-12 category-block">
                             <div class="category-block-one wow fadeInUp animated animated" data-wow-delay="00ms"
                                 data-wow-duration="1500ms">
-                                <figure class="image-box"><img src="{{ asset($cate->image) }}" alt=""></figure>
-                                <h5><a href="">{{ $cate->name }} Collections</a></h5>
+                                <figure class="image-box"><a href="{{ url('product/' . $cate->id) }}"><img
+                                            src="{{ asset($cate->image) }}" alt=""></a></figure>
+                                <h5><a href="{{ url('product/' . $cate->id) }}">{{ $cate->name }} Collections</a></h5>
                             </div>
                         </div>
                     @endforeach
@@ -70,9 +71,9 @@
                     <div class="filters">
                         <ul class="filter-tabs filter-btns centred clearfix">
                             <li class="active filter" data-role="button" data-filter="*">All</li>
-                            @foreach ($products as $product)
-                                <li class="filter" data-role="button" data-filter=".cat-{{ $product->category }}">
-                                    {{ $product->category }}
+                            @foreach ($category as $cate)
+                                <li class="filter" data-role="button" data-filter=".cat-{{ $cate->id }}">
+                                    {{ $cate->name }}
                                 </li>
                             @endforeach
                         </ul>
@@ -98,18 +99,16 @@
                                 </div>
                             </div>
                         @empty
-                            <div class="col-12 text-center no-products-message">
-                                <p class="mt-4">No products available.</p>
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <p class="mt-4 no-products-message d-none">No products available in this category.</p>
+                                </div>
                             </div>
                         @endforelse
                     </div>
 
                     <!-- Dynamic No Products Message (hidden by default) -->
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <p class="mt-4 no-products-message d-none">No products available in this category.</p>
-                        </div>
-                    </div>
+
                 </div>
 
                 <div class="more-btn centred">

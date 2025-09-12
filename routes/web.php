@@ -30,5 +30,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [HomeController::class,'index'])->name('home');
     Route::get('/about', [HomeController::class,'about'])->name('about');
     Route::get('/contact', [HomeController::class,'contact'])->name('contact');
+    Route::post('/contact', [HomeController::class,'contactstore'])->name('contactstore');
+    Route::get('/product/{id}', [HomeController::class, 'product'])->name('product');
+    Route::get('/product_details/{id}', [HomeController::class, 'productDetails'])->name('product_details');
+    Route::get('/blog', [HomeController::class, 'blog'])->name('blog');
+    Route::get('/blog_details/{id}', [HomeController::class, 'blogDetails'])->name('blog_details');
 
 require __DIR__.'/auth.php';

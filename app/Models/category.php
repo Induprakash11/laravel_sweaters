@@ -18,5 +18,7 @@ class Category extends Model
         'status',
     ];
     
+    
+
     public $timestamps = false;
 }
