@@ -101,70 +101,6 @@
         </div>
     </div>
 
-    <!-- DataTables Scripts -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            var table = $('#testimonial-table').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: '{{ route("testimonial.index") }}',
-                columns: [{
-                    data: 'id',
-                    name: 'id'
-                },
-                {
-                    data: 'image',
-                    name: 'image',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'name',
-                    name: 'name'
-                },
-                {
-                    data: 'message',
-                    name: 'message'
-                },
-                {
-                    data: 'status',
-                    name: 'status'
-                },
-                {
-                    data: 'rating',
-                    render: function (data, type, row) {
-                        let starsHtml = '<div class="set-star rating-select filled">';
-                        for (let i = 1; i <= 5; i++) {
-                            if (i <= row.rating) {
-                                starsHtml += '<i class="ti ti-star-filled text-warning fs-16 me-1"></i>';
-                            } else {
-                                starsHtml += '<i class="ti ti-star fs-16 me-1"></i>';
-                            }
-                        }
-                        starsHtml += '</div>';
-                        return starsHtml;
-                    }
-                },
-
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false
-                }
-                ]
-            });
-
-            // Refresh button click event
-            $(document).on('click', '.refresh-btn', function () {
-                table.ajax.reload(null, false); // false = stay on same page
-            });
-        });
-    </script>
-
     <!-- Add New Deals -->
     <div class="offcanvas offcanvas-end offcanvas-large" tabindex="-1" id="offcanvas_add_2" style="width: 30%">
         <div class="offcanvas-header border-bottom">
@@ -195,8 +131,8 @@
                     </div>
                     <div class="col-lg-10">
                         <div class="mb-3">
-                            <label for="status-select" class="form-label">Status</label>
-                            <select class="form-select" id="status-select" name="status">
+                            <label for="status-input" class="form-label">Status</label>
+                            <select class="form-select" id="status-input" name="status">
                                 <option value="">Select Status</option>
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
@@ -273,7 +209,7 @@
                     </div>
                     <div class="col-lg-10">
                         <div class="mb-3">
-                            <label for="status-select" class="form-label">Status</label>
+                            <label for="status-input" class="form-label">Status</label>
                             <select class="form-select" id="status-input" name="status">
                                 <option value="">Select Status</option>
                                 <option value="1">Active</option>
@@ -322,89 +258,358 @@
     </div>
     <!-- /edit Testimonial -->
 
-    <!-- delete modal -->
-    <div class="modal fade" id="delete_testimonial">
-        <div class="modal-dialog modal-dialog-centered modal-sm rounded-0">
-            <div class="modal-content rounded-0">
-                <div class="modal-body p-4 text-center position-relative">
-                    <div class="mb-3 position-relative z-1">
-                        <span class="avatar avatar-xl badge-soft-danger border-0 text-danger rounded-circle"><i
-                                class="ti ti-trash fs-24"></i></span>
-                    </div>
-                    <h5 class="mb-1">Delete Confirmation</h5>
-                    <p class="mb-3">Are you sure you want to remove testimonial you selected.</p>
-                    <form id="delete-form" action="" method="POST" style="display:inline;">
-                        <div class="d-flex justify-content-center">
-                            <a href="#" class="btn btn-light position-relative z-1 me-2 w-100"
-                                data-bs-dismiss="modal">Cancel</a>
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger position-relative z-1 w-100"
-                                title="Delete" data-bs-dismiss="modal">Delete</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- delete modal -->
-
+    <!-- DataTables Scripts -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script>
-        // create testimonial script
-        document.addEventListener('DOMContentLoaded', function () {
-            var createForm = document.getElementById('create-form');
-            createForm.action = '{{ route("testimonial.store") }}';
-        });
-
-        //edit testimonial script
-        document.addEventListener('DOMContentLoaded', function () {
-            var editOffcanvas = document.getElementById('offcanvas_edit');
-            var editForm = document.getElementById('edit-form');
-
-            // Delegate click event for edit buttons
-            document.querySelector('#testimonial-table').addEventListener('click', function (e) {
-                if (e.target.closest('.edit-btn')) {
-                    var button = e.target.closest('.edit-btn');
-                    var testimonialId = button.getAttribute('data-id');
-
-                    // Fetch testimonial data via AJAX
-                    fetch('{{ url("testimonial") }}/' + testimonialId)
-                        .then(response => response.json())
-                        .then(data => {
-                            // form fields
-                            editForm.action = '{{ url("testimonial") }}/' + testimonialId;
-                            editForm.querySelector('#name-input').value = data.name || '';
-                            editForm.querySelector('#message-input').value = data.message || '';
-                            editForm.querySelector('#status-input').value = data.status || '';
-                            if (data.rating) {
-                                let radio = editForm.querySelector(`input[name="rating"][value="${data.rating}"]`);
-                                if (radio) {
-                                    radio.checked = true;
-                                }
+        $(document).ready(function () {
+            var table = $('#testimonial-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route("testimonial.index") }}',
+                columns: [{
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'image',
+                    name: 'image',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'message',
+                    name: 'message'
+                },
+                {
+                    data: 'status',
+                    name: 'status'
+                },
+                {
+                    data: 'rating',
+                    render: function (data, type, row) {
+                        let starsHtml = '<div class="set-star rating-select filled">';
+                        for (let i = 1; i <= 5; i++) {
+                            if (i <= row.rating) {
+                                starsHtml += '<i class="ti ti-star-filled text-warning fs-16 me-1"></i>';
+                            } else {
+                                starsHtml += '<i class="ti ti-star fs-16 me-1"></i>';
                             }
+                        }
+                        starsHtml += '</div>';
+                        return starsHtml;
+                    }
+                },
 
-                            var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(editOffcanvas);
-                            offcanvas.show();
-                        })
-                        .catch(error => {
-                            console.error('Error fetching testimonial data:', error);
-                        });
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
                 }
+                ]
             });
-        });
 
-        // delete testimonial script
-        document.addEventListener('DOMContentLoaded', function () {
-            var deleteModal = document.getElementById('delete_testimonial');
-            deleteModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget;
-                var testimonialId = button.getAttribute('data-id');
-                var form = document.getElementById('delete-form');
-                form.action = '{{ route("testimonial.index") }}/' + testimonialId;
+            // Refresh button click event
+            $(document).on('click', '.refresh-btn', function () {
+                table.ajax.reload(null, false); // false = stay on same page
             });
+
+            // Create form AJAX submission
+            $("#create-form").submit(function (e) {
+                e.preventDefault();
+
+                // Get values
+                let name = $("#name-input");
+                let status = $("#status-input").val();
+                let message = $("#message-input").val();
+                let rating = $("#rating-input").val();
+                let image = $("#image-input")[0].files[0];
+
+                // Basic validation
+                if (status === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'status is required.'
+                    });
+                    return false;
+                }
+
+                if (name === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'name is required.'
+                    });
+                    return false;
+                }
+
+                if (message === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'message is required.'
+                    });
+                    return false;
+                }
+
+                if (rating === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'rating is required.'
+                    });
+                    return false;
+                }
+
+                // Image validation if provided
+                if (image) {
+                    let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/PNG', 'image/JPG'];
+                    if (!allowedTypes.includes(image.type)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
+                        });
+                        return false;
+                    }
+                    if (image.size > 5120 * 1024) { // 5MB
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Image size must be less than 5MB.'
+                        });
+                        return false;
+                    }
+                }
+
+                // Prepare FormData
+                let formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('name', name);
+                formData.append('message', message);
+                formData.append('rating', rating);
+                formData.append('status', status);
+                if (image) {
+                    formData.append('image', image);
+                }
+
+                // AJAX request
+                $.ajax({
+                    url: '{{ route("gallery.store") }}',
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.success
+                        });
+                        $("#create-form")[0].reset();
+                        $('#offcanvas_add_2').offcanvas('hide');
+                        table.ajax.reload(null, false);
+                    },
+                    error: function (xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something went wrong.'
+                        });
+                    }
+                });
+            });
+
+
+            // Edit button click event + form submission
+            $(document).on('click', '.edit-btn', function () {
+                var id = $(this).data('id');
+
+                // Fetch existing data
+                $.ajax({
+                    url: '{{ route("gallery.show", ":id") }}'.replace(':id', id),
+                    method: 'GET',
+                    success: function (data) {
+                        // Fill form fields
+                        $('#status-input').val(data.status);
+                        $('#name-input').val(data.name);
+                        $('#message-input').val(data.message);
+                        $('#rating-input').val(data.rating);
+                        $('#edit-form').attr('action', '{{ route("gallery.update", ":id") }}'.replace(':id', id));
+
+                        // Show the offcanvas/modal
+                        $('#offcanvas_edit').offcanvas('show');
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something went wrong while fetching data.'
+                        });
+                    }
+                });
+            });
+
+            // Edit form AJAX submission
+            $("#edit-form").submit(function (e) {
+                e.preventDefault();
+
+                let status = $("#status-input").val();
+                let name = $("#name-input").val();
+                let image = $("#edit-form #image-input")[0].files[0];
+
+                // Validation
+                if (status === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Status is required.'
+                    });
+                    return false;
+                }
+
+                if (name === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'name is required.'
+                    });
+                    return false;
+                }
+
+                if (message === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'message is required.'
+                    });
+                    return false;
+                }
+
+                if (rating === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'rating is required.'
+                    });
+                    return false;
+                }
+
+                if (image) {
+                    let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+                    if (!allowedTypes.includes(image.type)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
+                        });
+                        return false;
+                    }
+                    if (image.size > 5120 * 1024) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Image size must be less than 5MB.'
+                        });
+                        return false;
+                    }
+                }
+
+                // Prepare FormData
+                let formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('_method', 'PUT');
+                formData.append('name', name);
+                formData.append('message', message);
+                formData.append('rating', rating);
+                formData.append('status', status);
+                if (image) {
+                    formData.append('image', image);
+                }
+
+                // AJAX request
+                $.ajax({
+                    url: $("#edit-form").attr('action'),
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.success
+                        });
+                        $("#edit-form")[0].reset();
+                        $('#offcanvas_edit').offcanvas('hide');
+                        if (typeof table !== "undefined") {
+                            table.ajax.reload(null, false);
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something went wrong while updating.'
+                        });
+                    }
+                });
+            });
+
+            // Delete form submission with SweetAlert confirmation
+            $(document).on('click', '.delete-btn', function (e) {
+                e.preventDefault();
+
+                let id = $(this).data('id');
+                let url = $(this).data('url');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This record will be deleted permanently!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                _method: 'DELETE'
+                            },
+                            success: function (response) {
+                                Swal.fire('Deleted!', response.message, 'success');
+                                $('#gallery-table').DataTable().ajax.reload(); // reload table
+                            },
+                            error: function (xhr) {
+                                Swal.fire('Error!', 'Something went wrong.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+
+
+            // Show success message from session (for delete)
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: '{{ session("success") }}'
+                });
+            @endif
         });
     </script>
-
 </body>
 
 </html>

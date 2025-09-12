@@ -3,13 +3,15 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title></title>
-            
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Streamline your business with our advanced CRM template. Easily integrate and customize to manage sales, support, and customer interactions efficiently. Perfect for any business size">
-    <meta name="keywords" content="Advanced CRM template, customer relationship management, business CRM, sales optimization, customer support software, CRM integration, customizable CRM, business tools, enterprise CRM solutions">
+    <meta name="description"
+        content="Streamline your business with our advanced CRM template. Easily integrate and customize to manage sales, support, and customer interactions efficiently. Perfect for any business size">
+    <meta name="keywords"
+        content="Advanced CRM template, customer relationship management, business CRM, sales optimization, customer support software, CRM integration, customizable CRM, business tools, enterprise CRM solutions">
     <meta name="author" content="Dreams Technologies">
     <meta name="robots" content="index, follow">
-    
+
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{ asset('img/favicon.png') }}">
 
@@ -17,7 +19,7 @@
     <link rel="apple-touch-icon" href="{{ asset('img/apple-icon.png') }}">
 
     <!-- Theme Config Js -->
-    <script src="{{ asset('js/theme-script.js') }}" ></script>
+    <script src="{{ asset('js/theme-script.js') }}"></script>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
@@ -37,4 +39,8 @@
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" id="app-style">
+
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
 </head>

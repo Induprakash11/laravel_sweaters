@@ -9,8 +9,10 @@ use App\Models\Product;
 use App\Models\SocialMedia;
 use App\Models\Banner;
 use App\Models\Contact;
+use App\Models\EventReport;
 use App\Models\Profile;
 use App\Models\SocialMediaUrl;
+use App\Models\TestimonialReport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
@@ -98,7 +100,7 @@ class HomeController extends Controller
 
         $decode = decodeId($id);
         $getProducts = Product::where('category', $decode)->get();
-        return view('product', compact('getProducts', "socialMedia", "socialMediaUrl", "users", "profile", "products", "category", "blogs", "banner"));
+        return view('product', compact('getProducts',  "socialMedia", "socialMediaUrl", "users", "profile", "products", "category", "blogs", "banner"));
     }
 
     /**
@@ -154,4 +156,38 @@ class HomeController extends Controller
         $getblogDetails = BlogReport::where('id', $decode)->first();
         return view('blogDetails', compact('getblogDetails', "socialMedia", "socialMediaUrl", "users", "profile", "products", "category", "blogs", "banner"));
     }
+
+    public function service()
+    {
+        $users = Auth::user();
+        $banner = Banner::all();
+        $profile = Profile::first();
+        $category = Category::all();
+        $blogs = BlogReport::all();
+        $events = EventReport::all();
+        $products = Product::all();
+        $socialMedia = SocialMedia::all();
+        $socialMediaUrl = SocialMediaUrl::all();
+
+        return view('service', compact('socialMedia', 'events', 'socialMediaUrl', 'users', 'profile', 'products', 'category', 'blogs', 'banner'));
+
+    }
+
+    public function testimonial()
+    {
+        $users = Auth::user();
+        $banner = Banner::all();
+        $profile = Profile::first();
+        $category = Category::all();
+        $blogs = BlogReport::all();
+        $events = EventReport::all();
+        $products = Product::all();
+        $testimonials = TestimonialReport::all();
+        $socialMedia = SocialMedia::all();
+        $socialMediaUrl = SocialMediaUrl::all();
+
+        return view('testimonial', compact('socialMedia', 'testimonials', 'events', 'socialMediaUrl', 'users', 'profile', 'products', 'category', 'blogs', 'banner'));
+
+    }
+
 }

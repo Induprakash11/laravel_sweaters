@@ -15,7 +15,7 @@
 
         <!-- page-title -->
         <section class="page-title centred">
-            <div class="pattern-layer" style="background-image: url(assets/images/background/page-title.jpg);"></div>
+            <div class="pattern-layer" style="background-image: url({{ asset('images/background/page-title.jpg')  }})"></div>
             <div class="auto-container">
                 <div class="content-box">
                     <h1>Product Details</h1>

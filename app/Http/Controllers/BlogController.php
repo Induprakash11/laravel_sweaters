@@ -12,23 +12,36 @@ class BlogController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {   
+    {
         $blogs = BlogReport::all();
         if ($request->ajax()) {
             return DataTables::of(BlogReport::query())
-                ->addColumn('id', function ($blogs) {
-                    return $blogs->id;
+                ->filterColumn('id', function ($query, $keyword) {
+                    $query->where('id', $keyword);
                 })
-                ->addColumn('image', function ($blog) {
-                    return '<img src="' . asset($blog->image) . '" alt="" height="50" width="50">';
+                ->addColumn('image', function ($blogs) {
+                    return '<img src="' . asset($blogs->image) . '" alt="" height="50" width="50">';
                 })
-                ->addColumn('action', function ($blog) {
-                    return '<div class="d-flex gap-2">
-                        <a href="' . route('blogs.edit', $blog->id) . '" class="btn btn-icon btn-sm btn-warning shadow edit-btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvas_edit" data-id="' . $blog->id . '"><i class="ti ti-pencil"></i></a>
-                        <a class="delete-btn text-white bg-danger p-1 rounded-1" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_blog" data-id="' . $blog->id . '"><i class="ti ti-trash"></i></a>
-                        </div>';
-                    })
-                ->rawColumns(['id', 'image', 'action'])
+                ->addColumn('action', function ($blogs) {
+                    return '
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-icon btn-sm btn-warning p-2 shadow edit-btn" 
+                           data-bs-toggle="offcanvas" 
+                           data-bs-target="#offcanvas_edit" 
+                           data-id="' . $blogs->id . '">
+                            <i class="ti ti-pencil"></i>
+                        </a>
+                            
+                        <button type="button" 
+                                class="btn btn-sm btn-danger delete-btn p-2" 
+                                data-id="' . $blogs->id . '" 
+                                data-url="' . route('blogs.destroy', $blogs->id) . '">
+                            <i class="ti ti-trash"></i>
+                        </button>
+                    </div>';
+                })
+
+                ->rawColumns(['image', 'action'])
                 ->make(true);
         }
 
@@ -36,25 +49,10 @@ class BlogController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    // public function create()
-    // {
-    //     return view("admin.blogs.add");
-    // }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'message' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|integer|in:0,1',
-        ]);
-
         $data = $request->except('image'); // exclude image for now
         $data['date'] = date('d-m-Y');
 
@@ -75,8 +73,11 @@ class BlogController extends Controller
 
         BlogReport::create($data);
 
-        return redirect()->route("blogs.index")
-            ->with("success", "Blog created successfully.");
+        if ($request->ajax()) {
+            return response()->json(['success' => 'Blog created successfully.']);
+        } else {
+            return response()->json(['error' => 'Something went wrong.']);
+        }
     }
 
     /**
@@ -89,26 +90,10 @@ class BlogController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    // public function edit(string $id)
-    // {
-    //     $blogs = BlogReport::findOrFail($id);
-    //     return view("admin.blogs.edit", compact("blogs"));
-    // }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'title' => 'string|max:255',
-            'message' => 'string|max:255',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'integer|in:0,1',
-        ]);
-
         $blogs = BlogReport::findOrFail($id);
 
         $data = $request->except('image');
@@ -129,8 +114,12 @@ class BlogController extends Controller
 
         $blogs->update($data);
 
-        return redirect()->route("blogs.index")
-            ->with("success", "Blog updated successfully.");
+        if ($request->ajax()) {
+            return response()->json(['success' => 'Blog updated successfully.']);
+        } 
+        else {
+            return response()->json(['error'=> 'Something went wrong.']);
+        }
     }
 
     /**
@@ -145,6 +134,9 @@ class BlogController extends Controller
         }
 
         $blogs->delete();
-        return redirect()->route("blogs.index")->with("success", "Blog deleted successfully.");
+        return response()->json([
+        'status' => 'success',
+        'message' => 'Blog deleted successfully!'
+    ]);
     }
 }

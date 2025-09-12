@@ -124,3 +124,6 @@
 
 <!-- main-js -->
 <script src="{{ asset('js/script1.js') }}"></script>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -15,23 +15,36 @@ class EventController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {   
+    {
         $events = EventReport::all();
         if ($request->ajax()) {
             return DataTables::of(EventReport::query())
-                ->addColumn('id', function ($events) {
-                    return $events->id;
+                ->filterColumn('id', function ($query, $keyword) {
+                    $query->where('id', $keyword);
                 })
-                ->addColumn('image', function ($event) {
-                    return '<img src="' . asset($event->image) . '" alt="" height="50" width="50">';
+                ->addColumn('image', function ($events) {
+                    return '<img src="' . asset($events->image) . '" alt="" height="50" width="50">';
                 })
-                ->addColumn('action', function ($event) {
-                    return '<div class="d-flex gap-2">
-                        <a href="' . route('events.edit', $event->id) . '" class="btn btn-icon btn-sm btn-warning shadow edit-btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvas_edit" data-id="' . $event->id . '"><i class="ti ti-pencil"></i></a>
-                        <a class="delete-btn text-white bg-danger p-1 rounded-1" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_event" data-id="' . $event->id . '"><i class="ti ti-trash"></i></a>
-                        </div>';
-                    })
-                ->rawColumns(['id', 'image', 'action'])
+                ->addColumn('action', function ($events) {
+                    return '
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-icon btn-sm btn-warning p-2 shadow edit-btn" 
+                           data-bs-toggle="offcanvas" 
+                           data-bs-target="#offcanvas_edit" 
+                           data-id="' . $events->id . '">
+                            <i class="ti ti-pencil"></i>
+                        </a>
+                            
+                        <button type="button" 
+                                class="btn btn-sm btn-danger delete-btn p-2" 
+                                data-id="' . $events->id . '" 
+                                data-url="' . route('events.destroy', $events->id) . '">
+                            <i class="ti ti-trash"></i>
+                        </button>
+                    </div>';
+                })
+
+                ->rawColumns(['image', 'action'])
                 ->make(true);
         }
 
@@ -39,25 +52,10 @@ class EventController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    // public function create()
-    // {
-    //     return view("admin.events.add");
-    // }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|integer|in:0,1',
-        ]);
-
         $data = $request->except('image'); // exclude image for now
         $data['date'] = date('d-m-Y');
 
@@ -78,8 +76,11 @@ class EventController extends Controller
 
         EventReport::create($data);
 
-        return redirect()->route("events.index")
-            ->with("success", "Event created successfully.");
+        if ($request->ajax()) {
+            return response()->json(['success' => 'Event created successfully.']);
+        } else {
+            return response()->json(['error' => 'Something went wrong.']);
+        }
     }
 
     /**
@@ -92,26 +93,10 @@ class EventController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    // public function edit(string $id)
-    // {
-    //     $events = EventReport::findOrFail($id);
-    //     return view("admin.events.edit", compact("events"));
-    // }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'title' => 'string|max:255',
-            'description' => 'string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'integer|in:0,1',
-        ]);
-
         $events = EventReport::findOrFail($id);
 
         $data = $request->except('image');
@@ -132,8 +117,12 @@ class EventController extends Controller
 
         $events->update($data);
 
-        return redirect()->route("events.index")
-            ->with("success", "Event updated successfully.");
+        if ($request->ajax()) {
+            return response()->json(['success' => 'Event updated successfully.']);
+        } 
+        else {
+            return response()->json(['error'=> 'Something went wrong.']);
+        }
     }
 
     /**
@@ -141,13 +130,16 @@ class EventController extends Controller
      */
     public function destroy(string $id)
     {
-        $event = EventReport::findOrFail($id);
-         // Delete associated image if exists
-        if ($event->image && file_exists(public_path($event->image))) {
-            unlink(public_path($event->image));
+        $events = EventReport::findOrFail($id);
+        // Delete associated image if exists
+        if ($events->image && file_exists(public_path($events->image))) {
+            unlink(public_path($events->image));
         }
 
-        $event->delete();
-        return redirect()->route("events.index")->with("success","Event deleted successfully");
+        $events->delete();
+        return response()->json([
+        'status' => 'success',
+        'message' => 'Event deleted successfully!'
+    ]);
     }
 }

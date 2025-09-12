@@ -271,11 +271,11 @@
                     var categoryId = button.getAttribute('data-id');
 
                     // Fetch category data via AJAX
-                    fetch('{{ url("category") }}/' + categoryId)
+                    fetch('{{ url("admin/category") }}/' + categoryId)
                         .then(response => response.json())
                         .then(data => {
                             // form fields
-                            editForm.action = '{{ url("category") }}/' + categoryId;
+                            editForm.action = '{{ url("admin/category") }}/' + categoryId;
                             editForm.querySelector('#category-input').value = data.name || '';
                             editForm.querySelector('#status-input').value = data.status || '';
 

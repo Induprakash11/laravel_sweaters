@@ -12,7 +12,7 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/dashboard', [ProfileController::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/admin/dashboard', [ProfileController::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/admin/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -35,5 +35,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/product_details/{id}', [HomeController::class, 'productDetails'])->name('product_details');
     Route::get('/blog', [HomeController::class, 'blog'])->name('blog');
     Route::get('/blog_details/{id}', [HomeController::class, 'blogDetails'])->name('blog_details');
+    Route::get('/service', [HomeController::class, 'service'])->name('service');
+    Route::get('/testimonial', [HomeController::class, 'testimonial'])->name('testimonial');
+
 
 require __DIR__.'/auth.php';

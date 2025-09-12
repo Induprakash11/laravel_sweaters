@@ -15,19 +15,32 @@ class TestimonialController extends Controller
         $testimonial = TestimonialReport::all();
         if ($request->ajax()) {
             return DataTables::of(TestimonialReport::query())
-                ->addColumn('id', function ($testimonial) {
-                    return $testimonial->id;
+                ->filterColumn('id', function ($query, $keyword) {
+                    $query->where('id', $keyword);
                 })
                 ->addColumn('image', function ($testimonial) {
                     return '<img src="' . asset($testimonial->image) . '" alt="" height="50" width="50">';
                 })
                 ->addColumn('action', function ($testimonial) {
-                    return '<div class="d-flex gap-2">
-                        <a href="' . route('testimonial.edit', $testimonial->id) . '" class="btn btn-icon btn-sm btn-warning shadow edit-btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvas_edit" data-id="' . $testimonial->id . '"><i class="ti ti-pencil"></i></a>
-                        <a class="delete-btn text-white bg-danger p-1 rounded-1" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_testimonial" data-id="' . $testimonial->id . '"><i class="ti ti-trash"></i></a>
-                        </div>';
-                    })
-                ->rawColumns(['id', 'image', 'action'])
+                    return '
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-icon btn-sm btn-warning p-2 shadow edit-btn" 
+                           data-bs-toggle="offcanvas" 
+                           data-bs-target="#offcanvas_edit" 
+                           data-id="' . $testimonial->id . '">
+                            <i class="ti ti-pencil"></i>
+                        </a>
+                            
+                        <button type="button" 
+                                class="btn btn-sm btn-danger delete-btn p-2" 
+                                data-id="' . $testimonial->id . '" 
+                                data-url="' . route('testimonial.destroy', $testimonial->id) . '">
+                            <i class="ti ti-trash"></i>
+                        </button>
+                    </div>';
+                })
+
+                ->rawColumns(['image', 'action'])
                 ->make(true);
         }
 
@@ -35,27 +48,10 @@ class TestimonialController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    // public function create()
-    // {
-    //     $testimonial = new TestimonialReport();
-    //     return view("admin.testimonial.add", compact("testimonial"));
-    // }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'name' => 'required|string|max:255',
-            'message' => 'required|string|max:800',
-            'rating' => 'required|integer|in:0,1,2,3,4,5',
-            'status' => 'required|integer|in:0,1',
-        ]);
-
         $data = $request->except('image'); // exclude image for now
         $data['date'] = date('d-m-Y');
 
@@ -76,8 +72,11 @@ class TestimonialController extends Controller
 
         TestimonialReport::create($data);
 
-        return redirect()->route("testimonial.index")
-            ->with("success", "Testimonial created successfully.");
+        if ($request->ajax()) {
+            return response()->json(['success' => 'Testimonial created successfully.']);
+        } else {
+            return response()->json(['error' => 'Something went wrong.']);
+        }
     }
 
     /**
@@ -90,27 +89,10 @@ class TestimonialController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    // public function edit(string $id)
-    // {
-    //     $testimonial = TestimonialReport::findOrFail($id);
-    //     return view("admin.testimonial.edit", compact("testimonial"));
-    // }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'name' => 'string|max:255',
-            'message' => 'string|max:800',
-            'rating' => 'integer|in:0,1,2,3,4,5',
-            'status' => 'integer|in:0,1',
-        ]);
-
         $testimonial = TestimonialReport::findOrFail($id);
 
         $data = $request->except('image');
@@ -131,8 +113,12 @@ class TestimonialController extends Controller
 
         $testimonial->update($data);
 
-        return redirect()->route("testimonial.index")
-            ->with("success", "Testimonial updated successfully.");
+        if ($request->ajax()) {
+            return response()->json(['success' => 'Testimonial updated successfully.']);
+        } 
+        else {
+            return response()->json(['error'=> 'Something went wrong.']);
+        }
     }
 
     /**
@@ -147,6 +133,9 @@ class TestimonialController extends Controller
         }
 
         $testimonial->delete();
-        return redirect()->route("testimonial.index")->with("success","Testimonial deleted successfully");
+        return response()->json([
+        'status' => 'success',
+        'message' => 'Testimonial deleted successfully!'
+    ]);
     }
 }

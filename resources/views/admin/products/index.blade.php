@@ -100,37 +100,6 @@
         </div>
     </div>
 
-    <!-- DataTables Scripts -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            var table = $('#products-table').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: '{{ route("products.index") }}',
-                columns: [
-                    { data: 'id', name: 'id' },
-                    { data: 'category', name: 'category' },
-                    { data: 'image', name: 'image', orderable: false, searchable: false },
-                    { data: 'brand', name: 'brand' },
-                    { data: 'gauge', name: 'gauge' },
-                    { data: 'construction', name: 'construction' },
-                    { data: 'fabric', name: 'fabric' },
-                    { data: 'moq', name: 'moq' },
-                    { data: 'status', name: 'status' },
-                    { data: 'action', name: 'action', orderable: false, searchable: false }
-                ]
-            });
-
-            // Refresh button click event
-            $(document).on('click', '.refresh-btn', function () {
-                table.ajax.reload(null, false); // false = stay on same page
-            });
-        });
-    </script>
-
     <!-- Add New Deals -->
     <div class="offcanvas offcanvas-end offcanvas-large" tabindex="-1" id="offcanvas_add_2">
         <div class="offcanvas-header border-bottom">
@@ -148,8 +117,8 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-12">
                         <div class="mb-3">
-                            <label for="category-select" class="form-label">Category</label>
-                            <select class="form-select" id="category-select" name="category">
+                            <label for="category-input" class="form-label">Category</label>
+                            <select class="form-select" id="category-input" name="category">
                                 <option value="">Select Category</option>
                                 @foreach ($categories as $cate)
                                     <option value="{{ $cate->id }}">{{ $cate->name }}</option>
@@ -194,8 +163,8 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="category-select" class="form-label">Status</label>
-                            <select class="form-select" id="status-select" name="status">
+                            <label for="category-input" class="form-label">Status</label>
+                            <select class="form-select" id="status-input" name="status">
                                 <option value="">Select Status</option>
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
@@ -235,8 +204,8 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-12">
                         <div class="mb-3">
-                            <label for="edit-category-select" class="form-label">Category</label>
-                            <select class="form-select" id="edit-category-select" name="category">
+                            <label for="category-input" class="form-label">Category</label>
+                            <select class="form-select" id="category-input" name="category">
                                 <option value="">Select Category</option>
                                 @foreach ($categories as $cate)
                                     <option value="{{ $cate->name }}">{{ $cate->name }}</option>
@@ -247,43 +216,43 @@
 
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="edit-brand-input" class="form-label">Brand</label>
-                            <input type="text" class="form-control" id="edit-brand-input" name="brand"
+                            <label for="brand-input" class="form-label">Brand</label>
+                            <input type="text" class="form-control" id="brand-input" name="brand"
                                 placeholder="Enter brand">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="edit-gauge-input" class="form-label">Gauge</label>
-                            <input type="text" class="form-control" id="edit-gauge-input" name="gauge"
+                            <label for="gauge-input" class="form-label">Gauge</label>
+                            <input type="text" class="form-control" id="gauge-input" name="gauge"
                                 placeholder="Enter gauge">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="edit-construction-input" class="form-label">Construction</label>
-                            <input type="text" class="form-control" id="edit-construction-input" name="construction"
+                            <label for="construction-input" class="form-label">Construction</label>
+                            <input type="text" class="form-control" id="construction-input" name="construction"
                                 placeholder="Enter construction">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="edit-fabric-input" class="form-label">Fabric</label>
-                            <input type="text" class="form-control" id="edit-fabric-input" name="fabric"
+                            <label for="fabric-input" class="form-label">Fabric</label>
+                            <input type="text" class="form-control" id="fabric-input" name="fabric"
                                 placeholder="Enter fabric">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="edit-moq-input" class="form-label">Moq</label>
-                            <input type="text" class="form-control" id="edit-moq-input" name="moq"
+                            <label for="moq-input" class="form-label">Moq</label>
+                            <input type="text" class="form-control" id="moq-input" name="moq"
                                 placeholder="Enter MOQ">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="edit-status-select" class="form-label">Status</label>
-                            <select class="form-select" id="edit-status-select" name="status">
+                            <label for="status-input" class="form-label">Status</label>
+                            <select class="form-select" id="status-input" name="status">
                                 <option value="">Select Status</option>
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
@@ -292,8 +261,8 @@
                     </div>
                     <div class="col-lg-12">
                         <div class="mb-3">
-                            <label for="edit-image-input" class="form-label">Image</label>
-                            <input class="form-control" type="file" id="edit-image-input" name="image">
+                            <label for="image-input" class="form-label">Image</label>
+                            <input class="form-control" type="file" id="image-input" name="image">
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-end">
@@ -306,82 +275,394 @@
     </div>
     <!-- /edit Product -->
 
-    <!-- delete modal -->
-    <div class="modal fade" id="delete_product">
-        <div class="modal-dialog modal-dialog-centered modal-sm rounded-0">
-            <div class="modal-content rounded-0">
-                <div class="modal-body p-4 text-center position-relative">
-                    <div class="mb-3 position-relative z-1">
-                        <span class="avatar avatar-xl badge-soft-danger border-0 text-danger rounded-circle"><i
-                                class="ti ti-trash fs-24"></i></span>
-                    </div>
-                    <h5 class="mb-1">Delete Confirmation</h5>
-                    <p class="mb-3">Are you sure you want to remove product you selected.</p>
-                    <form id="delete-form" action="" method="POST" style="display:inline;">
-                        <div class="d-flex justify-content-center">
-                            <a href="#" class="btn btn-light position-relative z-1 me-2 w-100"
-                                data-bs-dismiss="modal">Cancel</a>
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger position-relative z-1 w-100"
-                                title="Delete" data-bs-dismiss="modal">Delete</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- delete modal -->
-
+    <!-- DataTables Scripts -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script>
-        // create product script
-        document.addEventListener('DOMContentLoaded', function () {
-            var createForm = document.getElementById('create-form');
-            createForm.action = '{{ route("products.store") }}';
-        });
+        $(document).ready(function () {
+            var table = $('#products-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route("products.index") }}',
+                columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'category', name: 'category' },
+                    { data: 'image', name: 'image', orderable: false, searchable: false },
+                    { data: 'brand', name: 'brand' },
+                    { data: 'gauge', name: 'gauge' },
+                    { data: 'construction', name: 'construction' },
+                    { data: 'fabric', name: 'fabric' },
+                    { data: 'moq', name: 'moq' },
+                    { data: 'status', name: 'status' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false }
+                ]
+            });
 
-        //edit product script
-        document.addEventListener('DOMContentLoaded', function () {
-            var editOffcanvas = document.getElementById('offcanvas_edit');
-            var editForm = document.getElementById('edit-form');
+            // Refresh button click event
+            $(document).on('click', '.refresh-btn', function () {
+                table.ajax.reload(null, false); // false = stay on same page
+            });
 
-            document.querySelector('#products-table').addEventListener('click', function (e) {
-                if (e.target.closest('.edit-btn')) {
-                    var button = e.target.closest('.edit-btn');
-                    var productId = button.getAttribute('data-id');
+            // Create form AJAX submission
+            $("#create-form").submit(function (e) {
+                e.preventDefault();
 
-                    // Fetch product data via AJAX
-                    fetch('{{ url("products") }}/' + productId)
-                        .then(response => response.json())
-                        .then(data => {
-                            editForm.action = '{{ url("products") }}/' + productId;
-                            editForm.querySelector('#edit-category-select').value = data.category;
-                            editForm.querySelector('#edit-brand-input').value = data.brand;
-                            editForm.querySelector('#edit-gauge-input').value = data.gauge;
-                            editForm.querySelector('#edit-construction-input').value = data.construction;
-                            editForm.querySelector('#edit-fabric-input').value = data.fabric;
-                            editForm.querySelector('#edit-moq-input').value = data.moq;
-                            editForm.querySelector('#edit-status-select').value = data.status;
+                // Get values
+                let category = $("#category-input");
+                let brand = $("#brand-input");
+                let gauge = $("#gauge-input");
+                let construction = $("#construction-input");
+                let fabric = $("#fabric-input");
+                let moq = $("#moq-input");
+                let status = $("#status-input").val();
+                let image = $("#image-input")[0].files[0];
 
-                            var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(editOffcanvas);
-                            offcanvas.show();
-                        })
-                        .catch(error => {
-                            console.error('Error fetching product data:', error);
-                        });
+                // Basic validation
+                if (status === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'status is required.'
+                    });
+                    return false;
                 }
-            });
-        });
 
-        // delete product script
-        document.addEventListener('DOMContentLoaded', function () {
-            var deleteModal = document.getElementById('delete_product');
-            deleteModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget;
-                var productId = button.getAttribute('data-id');
-                var form = document.getElementById('delete-form');
-                form.action = '{{ route("products.index") }}/' + productId;
+                if (category === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'category is required.'
+                    });
+                    return false;
+                }
+
+                if (brand === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'brand is required.'
+                    });
+                    return false;
+                }
+
+                if (gauge === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'gauge is required.'
+                    });
+                    return false;
+                }
+
+                if (construction === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'construction is required.'
+                    });
+                    return false;
+                }
+
+                if (fabric === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'fabric is required.'
+                    });
+                    return false;
+                }
+
+                if (moq === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'moq is required.'
+                    });
+                    return false;
+                }
+
+                // Image validation if provided
+                if (image) {
+                    let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/PNG', 'image/JPG'];
+                    if (!allowedTypes.includes(image.type)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
+                        });
+                        return false;
+                    }
+                    if (image.size > 5120 * 1024) { // 5MB
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Image size must be less than 5MB.'
+                        });
+                        return false;
+                    }
+                }
+
+                // Prepare FormData
+                let formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('category', category);
+                formData.append('brand', brand);
+                formData.append('gauge', gauge);
+                formData.append('construction', construction);
+                formData.append('fabric', fabric);
+                formData.append('moq', moq);
+                formData.append('status', status);
+                if (image) {
+                    formData.append('image', image);
+                }
+
+                // AJAX request
+                $.ajax({
+                    url: '{{ route("products.store") }}',
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.success
+                        });
+                        $("#create-form")[0].reset();
+                        $('#offcanvas_add_2').offcanvas('hide');
+                        table.ajax.reload(null, false);
+                    },
+                    error: function (xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something went wrong.'
+                        });
+                    }
+                });
             });
+
+
+            // Edit button click event + form submission
+            $(document).on('click', '.edit-btn', function () {
+                var id = $(this).data('id');
+
+                // Fetch existing data
+                $.ajax({
+                    url: '{{ route("products.show", ":id") }}'.replace(':id', id),
+                    method: 'GET',
+                    success: function (data) {
+                        // Fill form fields
+                        $('#status-input').val(data.status);
+                        $('#gauge-input').val(data.gauge);
+                        $('#construction-input').val(data.construction);
+                        $('#fabric-input').val(data.fabric);
+                        $('#moq-input').val(data.moq)
+                        $('#category-input').val(data.category);
+                        $('#brand-input').val(data.brand);
+                        $('#edit-form').attr('action', '{{ route("products.update", ":id") }}'.replace(':id', id));
+
+                        // Show the offcanvas/modal
+                        $('#offcanvas_edit').offcanvas('show');
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something went wrong while fetching data.'
+                        });
+                    }
+                });
+            });
+
+            // Edit form AJAX submission
+            $("#edit-form").submit(function (e) {
+                e.preventDefault();
+
+                let status = $("#status-input").val();
+                let gauge = $("#gauge-input").val();
+                let construction = $("#construction-input").val();
+                let fabric = $("#fabric-input").val();
+                let moq = $("#moq-input").val();
+                let category = $("#category-input").val();
+                let brand = $("#brand-input").val();
+                let image = $("#edit-form #image-input")[0].files[0];
+
+                // Validation
+                if (status === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Status is required.'
+                    });
+                    return false;
+                }
+
+                if (category === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'category is required.'
+                    });
+                    return false;
+                }
+
+                if (brand === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'brand is required.'
+                    });
+                    return false;
+                }
+
+                if (gauge === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'gauge is required.'
+                    });
+                    return false;
+                }
+
+                if (construction === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'construction is required.'
+                    });
+                    return false;
+                }
+
+                if (fabric === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'fabric is required.'
+                    });
+                    return false;
+                }
+
+                if (moq === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'moq is required.'
+                    });
+                    return false;
+                }
+
+                if (image) {
+                    let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+                    if (!allowedTypes.includes(image.type)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
+                        });
+                        return false;
+                    }
+                    if (image.size > 5120 * 1024) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Image size must be less than 5MB.'
+                        });
+                        return false;
+                    }
+                }
+
+                // Prepare FormData
+                let formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('_method', 'PUT');
+                formData.append('category', category);
+                formData.append('gauge', gauge);
+                formData.append('construction', construction);
+                formData.append('fabric', fabric);
+                formData.append('moq', moq);
+                formData.append('brand', brand);
+                formData.append('status', status);
+                if (image) {
+                    formData.append('image', image);
+                }
+
+                // AJAX request
+                $.ajax({
+                    url: $("#edit-form").attr('action'),
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.success
+                        });
+                        $("#edit-form")[0].reset();
+                        $('#offcanvas_edit').offcanvas('hide');
+                        if (typeof table !== "undefined") {
+                            table.ajax.reload(null, false);
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something went wrong while updating.'
+                        });
+                    }
+                });
+            });
+
+            // Delete form submission with SweetAlert confirmation
+            $(document).on('click', '.delete-btn', function (e) {
+                e.preventDefault();
+
+                let id = $(this).data('id');
+                let url = $(this).data('url');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This record will be deleted permanently!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                _method: 'DELETE'
+                            },
+                            success: function (response) {
+                                Swal.fire('Deleted!', response.message, 'success');
+                                $('#products-table').DataTable().ajax.reload(); // reload table
+                            },
+                            error: function (xhr) {
+                                Swal.fire('Error!', 'Something went wrong.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+
+
+            // Show success message from session (for delete)
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: '{{ session("success") }}'
+                });
+            @endif
         });
     </script>
 </body>

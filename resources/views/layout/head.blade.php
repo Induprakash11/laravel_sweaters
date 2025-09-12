@@ -21,3 +21,7 @@
 <link href="{{ asset('css/color.css') }}" rel="stylesheet">
 <link href="{{ asset('css/style1.css') }}" rel="stylesheet">
 <link href="{{ asset('css/responsive.css') }}" rel="stylesheet">
+
+<!-- SweetAlert2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+

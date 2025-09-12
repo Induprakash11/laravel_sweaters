@@ -55,10 +55,6 @@
                             </a>
                         </li>
                         <li class="submenu">
-                            <a href="" ><i class="ti ti-page-break"></i><span>Landing
-                                    Page</span></a>
-                        </li>
-                        <li class="submenu">
                             <a href="{{ route('blogs.index') }}" class="{{ request()->routeIs('blogs.index') ? 'active' : '' }}"><i
                                     class="ti ti-brand-blogger"></i><span>Blog</span></a>
                         </li>
@@ -68,11 +64,6 @@
                         <li class="submenu">
                             <a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.index') ? 'active' : '' }}"><i
                                     class="ti ti-map-pin-check"></i><span>Event</span></a>
-                        </li>
-                        <li class="submenu">
-                            <a href="" >
-                                <i class="ti ti-flag"></i><span>Career List</span></span>
-                            </a>
                         </li>
                         <li class="submenu">
                             <a href="{{ route('testimonial.index') }}" class="{{ request()->routeIs('testimonial.index') ? 'active' : '' }}"><i

@@ -18,19 +18,32 @@ class ProductController extends Controller
         $products = Product::all();
         if ($request->ajax()) {
             return DataTables::of(Product::query())
-                ->addColumn('id', function ($product) {
-                    return $product->id;
+                ->filterColumn('id', function ($query, $keyword) {
+                    $query->where('id', $keyword);
                 })
                 ->addColumn('image', function ($product) {
                     return '<img src="' . asset($product->image) . '" alt="" height="50" width="50">';
                 })
-                ->addColumn('action', function ($product) {
-                    return '<div class="d-flex gap-2">
-                        <a href="' . route('products.edit', $product->id) . '" class="btn btn-icon btn-sm btn-warning shadow edit-btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvas_edit" data-id="' . $product->id . '"><i class="ti ti-pencil"></i></a>
-                        <a class="delete-btn text-white bg-danger p-1 rounded-1" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete_product" data-id="' . $product->id . '"><i class="ti ti-trash"></i></a>
-                        </div>';
-                    })
-                ->rawColumns(['id', 'image', 'action'])
+                ->addColumn('action', function ($products) {
+                    return '
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-icon btn-sm btn-warning p-2 shadow edit-btn" 
+                           data-bs-toggle="offcanvas" 
+                           data-bs-target="#offcanvas_edit" 
+                           data-id="' . $products->id . '">
+                            <i class="ti ti-pencil"></i>
+                        </a>
+                            
+                        <button type="button" 
+                                class="btn btn-sm btn-danger delete-btn p-2" 
+                                data-id="' . $products->id . '" 
+                                data-url="' . route('products.destroy', $products->id) . '">
+                            <i class="ti ti-trash"></i>
+                        </button>
+                    </div>';
+                })
+
+                ->rawColumns(['image', 'action'])
                 ->make(true);
         }
 
@@ -38,30 +51,10 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-                    
-     */
-    // public function create()
-    // {
-    //     return view("admin.products.add", compact("categories"));
-    // }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'category' => 'required|string|max:100',
-            'brand' => 'required|string|max:255',
-            'gauge' => 'required|string|max:255',
-            'construction' => 'required|string|max:255',
-            'fabric' => 'required|string|max:255',
-            'moq' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|integer|in:0,1',
-        ]);
-
         $data = $request->except('image'); // exclude image for now
         $data['date'] = date('d-m-Y');
 
@@ -82,8 +75,11 @@ class ProductController extends Controller
 
         Product::create($data);
 
-        return redirect()->route("products.index")
-            ->with("success", "Product created successfully.");
+        if ($request->ajax()) {
+            return response()->json(['success' => 'Product created successfully.']);
+        } else {
+            return response()->json(['error' => 'Something went wrong.']);
+        }
     }
 
 
@@ -97,31 +93,10 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    // public function edit(string $id)
-    // {
-    //     $categories = Category::all();
-    //     $product = Product::findOrFail($id);
-    //     return view("admin.products.edit", compact("product", "categories"));
-    // }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'category' => 'string|max:100',
-            'brand' => 'string|max:255',
-            'gauge' => 'string|max:255',
-            'construction' => 'string|max:255',
-            'fabric' => 'string|max:255',
-            'moq' => 'string|max:255',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'integer|in:0,1',
-        ]);
-
         $product = Product::findOrFail($id);
 
         $data = $request->except('image');
@@ -142,8 +117,12 @@ class ProductController extends Controller
 
         $product->update($data);
 
-        return redirect()->route("products.index")
-            ->with("success", "Product updated successfully.");
+        if ($request->ajax()) {
+            return response()->json(['success' => 'Product updated successfully.']);
+        } 
+        else {
+            return response()->json(['error'=> 'Something went wrong.']);
+        }
     }
 
 
@@ -160,6 +139,9 @@ class ProductController extends Controller
         }
 
         $product->delete();
-        return redirect()->route("products.index")->with("success", "Product deleted successfully.");
+        return response()->json([
+        'status' => 'success',
+        'message' => 'Product deleted successfully!'
+    ]);
     }
 }
