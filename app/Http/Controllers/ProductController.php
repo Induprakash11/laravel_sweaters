@@ -21,31 +21,33 @@ class ProductController extends Controller
                 ->filterColumn('id', function ($query, $keyword) {
                     $query->where('id', $keyword);
                 })
+                ->addColumn('category', function ($product) {
+                    return $product->category;
+                })
                 ->addColumn('image', function ($product) {
                     return '<img src="' . asset($product->image) . '" alt="" height="50" width="50">';
                 })
-                ->addColumn('action', function ($products) {
+                ->addColumn('action', function ($product) {
                     return '
-                    <div class="d-flex gap-2">
-                        <a class="btn btn-icon btn-sm btn-warning p-2 shadow edit-btn" 
-                           data-bs-toggle="offcanvas" 
-                           data-bs-target="#offcanvas_edit" 
-                           data-id="' . $products->id . '">
-                            <i class="ti ti-pencil"></i>
-                        </a>
-                            
-                        <button type="button" 
-                                class="btn btn-sm btn-danger delete-btn p-2" 
-                                data-id="' . $products->id . '" 
-                                data-url="' . route('products.destroy', $products->id) . '">
-                            <i class="ti ti-trash"></i>
-                        </button>
-                    </div>';
+                <div class="d-flex gap-2">
+                    <a class="btn btn-icon btn-sm btn-warning p-2 shadow edit-btn" 
+                       data-bs-toggle="offcanvas" 
+                       data-bs-target="#offcanvas_edit" 
+                       data-id="' . $product->id . '">
+                        <i class="ti ti-pencil"></i>
+                    </a>
+                    <button type="button" 
+                            class="btn btn-sm btn-danger delete-btn p-2" 
+                            data-id="' . $product->id . '" 
+                            data-url="' . route('products.destroy', $product->id) . '">
+                        <i class="ti ti-trash"></i>
+                    </button>
+                </div>';
                 })
-
                 ->rawColumns(['image', 'action'])
                 ->make(true);
         }
+
 
         return view("admin.products.index", compact("categories", "products"));
     }
@@ -69,9 +71,7 @@ class ProductController extends Controller
 
             // save relative path in DB
             $data['image'] = 'assets/products/' . $filename;
-        } else {
-            $data['image'] = null;
-        }
+        } 
 
         Product::create($data);
 
@@ -109,7 +109,7 @@ class ProductController extends Controller
             }
 
             $image = $request->file('image');
-            $filename = time(). '.' . $image->getClientOriginalExtension();
+            $filename = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('assets/products'), $filename);
 
             $data['image'] = 'assets/products/' . $filename;
@@ -119,9 +119,8 @@ class ProductController extends Controller
 
         if ($request->ajax()) {
             return response()->json(['success' => 'Product updated successfully.']);
-        } 
-        else {
-            return response()->json(['error'=> 'Something went wrong.']);
+        } else {
+            return response()->json(['error' => 'Something went wrong.']);
         }
     }
 
@@ -140,8 +139,8 @@ class ProductController extends Controller
 
         $product->delete();
         return response()->json([
-        'status' => 'success',
-        'message' => 'Product deleted successfully!'
-    ]);
+            'status' => 'success',
+            'message' => 'Product deleted successfully!'
+        ]);
     }
 }

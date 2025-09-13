@@ -26,8 +26,8 @@
                 <!-- Page Header -->
                 <div class="d-flex align-items-center justify-content-between gap-2 mb-4 flex-wrap">
                     <div>
-                        <h4 class="mb-1">Gallery<span
-                                class="badge badge-soft-primary ms-2">{{ count($gallery) }}</span></h4>
+                        <h4 class="mb-1">Gallery<span class="badge badge-soft-primary ms-2">{{ count($gallery) }}</span>
+                        </h4>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 p-0">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
@@ -124,7 +124,6 @@
                         <div class="mb-3">
                             <label for="category-select" class="form-label">Status</label>
                             <select class="form-select" id="status-input" name="status">
-                                <option value="">Select Status</option>
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
@@ -164,15 +163,14 @@
                     <div class="col-lg-10">
                         <div class="mb-3">
                             <label for="title-input" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="title-input" name="title"
-                                 placeholder="Enter title">
+                            <input type="text" class="form-control" id="edit-title-input" name="title"
+                                placeholder="Enter title">
                         </div>
                     </div>
                     <div class="col-lg-10">
                         <div class="mb-3">
                             <label for="category-select" class="form-label">Status</label>
-                            <select class="form-select" id="status-input" name="status">
-                                <option value="">Select Status</option>
+                            <select class="form-select" id="edit-status-input" name="status">
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
@@ -181,7 +179,8 @@
                     <div class="col-lg-10">
                         <div class="mb-3">
                             <label for="image-input" class="form-label">Image</label>
-                            <input class="form-control" type="file" id="image-input" name="image">
+                            <img id="edit-image-preview" src="" alt="Preview" style="max-height:80px; display:none;">
+                            <input class="form-control" type="file" id="edit-image-input" name="image">
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-end">
@@ -223,7 +222,7 @@
                 e.preventDefault();
 
                 // Get values
-                let title = $("#title-input");
+                let title = $("#title-input").val();
                 let status = $("#status-input").val();
                 let image = $("#image-input")[0].files[0];
 
@@ -289,7 +288,9 @@
                             title: 'Success',
                             text: response.success
                         });
-                        $("#create-form")[0].reset();
+                        // Reset + clear preview
+                        $("#edit-form")[0].reset();
+                        $("#edit-image-preview").hide().attr("src", "");
                         $('#offcanvas_add_2').offcanvas('hide');
                         table.ajax.reload(null, false);
                     },
@@ -314,8 +315,13 @@
                     method: 'GET',
                     success: function (data) {
                         // Fill form fields
-                        $('#status-input').val(data.status);
-                        $('#title-input').val(data.title);
+                        if (data.image) {
+                            $("#edit-image-preview").attr("src", "/" + data.image).show();
+                        } else {
+                            $("#edit-image-preview").hide();
+                        }
+                        $('#edit-status-input').val(data.status);
+                        $('#edit-title-input').val(data.title);
                         $('#edit-form').attr('action', '{{ route("gallery.update", ":id") }}'.replace(':id', id));
 
                         // Show the offcanvas/modal
@@ -335,9 +341,9 @@
             $("#edit-form").submit(function (e) {
                 e.preventDefault();
 
-                let status = $("#status-input").val();
-                let title = $("#title-input").val();
-                let image = $("#edit-form #image-input")[0].files[0];
+                let status = $("#edit-status-input").val();
+                let title = $("#edit-title-input").val();
+                let image = $("#edit-image-input")[0].files[0];
 
                 // Validation
                 if (status === "") {
@@ -401,7 +407,9 @@
                             title: 'Success',
                             text: response.success
                         });
+                        // Reset + clear preview
                         $("#edit-form")[0].reset();
+                        $("#edit-image-preview").hide().attr("src", "");
                         $('#offcanvas_edit').offcanvas('hide');
                         if (typeof table !== "undefined") {
                             table.ajax.reload(null, false);

@@ -68,9 +68,7 @@ class GalleryController extends Controller
 
             // save relative path in DB
             $data['image'] = 'assets/gallery/' . $filename;
-        } else {
-            $data['image'] = null;
-        }
+        } 
 
         Gallery::create($data);
 

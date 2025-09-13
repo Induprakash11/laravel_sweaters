@@ -126,14 +126,14 @@
                     <div class="col-lg-10">
                         <div class="mb-3">
                             <label for="message-input" class="form-label">Message</label>
-                            <textarea name="message" id="message" cols="30" rows="5"></textarea>
+                            <input type="text" class="form-control" id="message-input" name="message"
+                                placeholder="Enter message">
                         </div>
                     </div>
                     <div class="col-lg-10">
                         <div class="mb-3">
                             <label for="status-input" class="form-label">Status</label>
                             <select class="form-select" id="status-input" name="status">
-                                <option value="">Select Status</option>
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
@@ -198,20 +198,21 @@
                     <div class="col-lg-10">
                         <div class="mb-3">
                             <label for="name-input" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="name-input" name="name"
+                            <input type="text" class="form-control" id="edit-name-input" name="name"
                                 placeholder="Enter name">
                         </div>
                     </div>
                     <div class="col-lg-10">
                         <div class="mb-3">
-                            <textarea name="message" id="message-input"></textarea>
+                            <label for="message-input" class="form-label">Message</label>
+                            <input type="text" class="form-control" id="edit-message-input" name="message"
+                                placeholder="Enter message">
                         </div>
                     </div>
                     <div class="col-lg-10">
                         <div class="mb-3">
                             <label for="status-input" class="form-label">Status</label>
-                            <select class="form-select" id="status-input" name="status">
-                                <option value="">Select Status</option>
+                            <select class="form-select" id="edit-status-input" name="status">
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
@@ -221,23 +222,23 @@
                         <div class="mt-2">
                             <label for="rating-select" class="form-label">Rating</label>
                             <div class="form-check form-check-inline">
-                                <input type="radio" id="customRadio1" name="rating" value="1" class="form-check-input">
+                                <input type="radio" id="edit-customRadio1" name="edit-rating" value="1" class="form-check-input">
                                 <label class="form-check-label" for="customRadio1">1</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" id="customRadio2" name="rating" value="2" class="form-check-input">
+                                <input type="radio" id="edit-customRadio2" name="edit-rating" value="2" class="form-check-input">
                                 <label class="form-check-label" for="customRadio2">2</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" id="customRadio3" name="rating" value="3" class="form-check-input">
+                                <input type="radio" id="edit-customRadio3" name="edit-rating" value="3" class="form-check-input">
                                 <label class="form-check-label" for="customRadio3">3</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" id="customRadio4" name="rating" value="4" class="form-check-input">
+                                <input type="radio" id="edit-customRadio4" name="edit-rating" value="4" class="form-check-input">
                                 <label class="form-check-label" for="customRadio4">4</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" id="customRadio5" name="rating" value="5" class="form-check-input">
+                                <input type="radio" id="edit-customRadio5" name="edit-rating" value="5" class="form-check-input">
                                 <label class="form-check-label" for="customRadio5">5</label>
                             </div>
                         </div>
@@ -245,7 +246,8 @@
                     <div class="col-lg-10">
                         <div class="mb-3">
                             <label for="image-input" class="form-label">Image</label>
-                            <input class="form-control" type="file" id="image-input" name="image">
+                            <img id="edit-image-preview" src="" alt="Preview" style="max-height:80px; display:none;">
+                            <input class="form-control" type="file" id="edit-image-input" name="image">
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-end">
@@ -325,10 +327,10 @@
                 e.preventDefault();
 
                 // Get values
-                let name = $("#name-input");
+                let name = $("#name-input").val();
                 let status = $("#status-input").val();
                 let message = $("#message-input").val();
-                let rating = $("#rating-input").val();
+                let rating = $("input[name='rating']:checked").val();
                 let image = $("#image-input")[0].files[0];
 
                 // Basic validation
@@ -402,7 +404,7 @@
 
                 // AJAX request
                 $.ajax({
-                    url: '{{ route("gallery.store") }}',
+                    url: '{{ route("testimonial.store") }}',
                     method: "POST",
                     data: formData,
                     processData: false,
@@ -413,7 +415,9 @@
                             title: 'Success',
                             text: response.success
                         });
-                        $("#create-form")[0].reset();
+                        // Reset + clear preview
+                        $("#edit-form")[0].reset();
+                        $("#edit-image-preview").hide().attr("src", "");
                         $('#offcanvas_add_2').offcanvas('hide');
                         table.ajax.reload(null, false);
                     },
@@ -434,15 +438,21 @@
 
                 // Fetch existing data
                 $.ajax({
-                    url: '{{ route("gallery.show", ":id") }}'.replace(':id', id),
+                    url: '{{ route("testimonial.show", ":id") }}'.replace(':id', id),
                     method: 'GET',
                     success: function (data) {
                         // Fill form fields
-                        $('#status-input').val(data.status);
-                        $('#name-input').val(data.name);
-                        $('#message-input').val(data.message);
-                        $('#rating-input').val(data.rating);
-                        $('#edit-form').attr('action', '{{ route("gallery.update", ":id") }}'.replace(':id', id));
+                        if (data.image) {
+                            $("#edit-image-preview").attr("src", "/" + data.image).show();
+                        } else {
+                            $("#edit-image-preview").hide();
+                        }
+
+                         $("input[name='edit-rating'][value='" + data.rating + "']").prop("checked", true);
+                        $('#edit-status-input').val(data.status);
+                        $('#edit-name-input').val(data.name);
+                        $('#edit-message-input').val(data.message);
+                        $('#edit-form').attr('action', '{{ route("testimonial.update", ":id") }}'.replace(':id', id));
 
                         // Show the offcanvas/modal
                         $('#offcanvas_edit').offcanvas('show');
@@ -461,9 +471,11 @@
             $("#edit-form").submit(function (e) {
                 e.preventDefault();
 
-                let status = $("#status-input").val();
-                let name = $("#name-input").val();
-                let image = $("#edit-form #image-input")[0].files[0];
+                let status = $("#edit-status-input").val();
+                let name = $("#edit-name-input").val();
+                let message = $("#edit-message-input").val();
+                let rating = $("input[name='edit-rating']:checked").val();
+                let image = $("#edit-image-input")[0].files[0];
 
                 // Validation
                 if (status === "") {
@@ -547,7 +559,9 @@
                             title: 'Success',
                             text: response.success
                         });
+                        // Reset + clear preview
                         $("#edit-form")[0].reset();
+                        $("#edit-image-preview").hide().attr("src", "");
                         $('#offcanvas_edit').offcanvas('hide');
                         if (typeof table !== "undefined") {
                             table.ajax.reload(null, false);
@@ -589,7 +603,7 @@
                             },
                             success: function (response) {
                                 Swal.fire('Deleted!', response.message, 'success');
-                                $('#gallery-table').DataTable().ajax.reload(); // reload table
+                                $('#testimonial-table').DataTable().ajax.reload(); // reload table
                             },
                             error: function (xhr) {
                                 Swal.fire('Error!', 'Something went wrong.', 'error');

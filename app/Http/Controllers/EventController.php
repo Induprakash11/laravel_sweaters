@@ -70,9 +70,7 @@ class EventController extends Controller
 
             // save relative path in DB
             $data['image'] = 'assets/events/' . $filename;
-        } else {
-            $data['image'] = null;
-        }
+        } 
 
         EventReport::create($data);
 

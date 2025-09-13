@@ -67,9 +67,7 @@ class BlogController extends Controller
 
             // save relative path in DB
             $data['image'] = 'assets/blogs/' . $filename;
-        } else {
-            $data['image'] = null;
-        }
+        } 
 
         BlogReport::create($data);
 

@@ -66,9 +66,7 @@ class TestimonialController extends Controller
 
             // save relative path in DB
             $data['image'] = 'assets/testimonial/' . $filename;
-        } else {
-            $data['image'] = null;
-        }
+        } 
 
         TestimonialReport::create($data);
 

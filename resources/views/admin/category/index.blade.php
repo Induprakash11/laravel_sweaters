@@ -71,7 +71,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Id</th>
-                                                <th>Category</th>
+                                                <th>Name</th>
                                                 <th>Image</th>
                                                 <th>Status</th>
                                                 <th>Created</th>
@@ -100,33 +100,6 @@
         </div>
     </div>
 
-    <!-- DataTables Scripts -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            var table = $('#categories-table').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: '{{ route("category.index") }}',
-                columns: [
-                    { data: 'id', name: 'id' },
-                    { data: 'name', name: 'name' },
-                    { data: 'image', name: 'image' },
-                    { data: 'status', name: 'status' },
-                    { data: 'date', name: 'date' },
-                    { data: 'action', name: 'action', orderable: false, searchable: false }
-                ]
-            });
-
-            // Refresh button click event
-            $(document).on('click', '.refresh-btn', function () {
-                table.ajax.reload(null, false); // false = stay on same page
-            });
-        });
-    </script>
-
     <!-- Add New Deals -->
     <div class="offcanvas offcanvas-end offcanvas-large" tabindex="-1" id="offcanvas_add_2" style="width: 30%">
         <div class="offcanvas-header border-bottom">
@@ -146,7 +119,7 @@
                     <div class="col-lg-10">
                         <div class="mb-3">
                             <label for="category-input" class="form-label">Category</label>
-                            <input type="text" class="form-control" id="category-input" name="name"
+                            <input type="text" class="form-control" id="name-input" name="name"
                                 placeholder="Enter Category">
                         </div>
                     </div>
@@ -160,7 +133,7 @@
                         <div class="mb-3">
                             <label for="category-select" class="form-label">Status</label>
                             <select class="form-select" id="status-input" name="status">
-                                <option value="">Select Status</option>
+                                
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
@@ -195,21 +168,21 @@
                     <div class="col-lg-10">
                         <div class="mb-3">
                             <label for="category-input" class="form-label">Category</label>
-                            <input type="text" class="form-control" id="category-input" name="name"
-                                placeholder="Enter category">
+                            <input type="text" class="form-control" id="edit-name-input" name="name"
+                                placeholder="Enter name">
                         </div>
                     </div>
                     <div class="col-lg-10">
                         <div class="mb-3">
                             <label for="image-input" class="form-label">Image</label>
-                            <input class="form-control" type="file" id="image-input" name="image">
+                            <img id="edit-image-preview" src="" alt="Preview" style="max-height:80px; display:none;">
+                            <input class="form-control" type="file" id="edit-image-input" name="image">
                         </div>
                     </div>
                     <div class="col-lg-10">
                         <div class="mb-3">
                             <label for="category-select" class="form-label">Status</label>
-                            <select class="form-select" id="status-input" name="status">
-                                <option value="">Select Status</option>
+                            <select class="form-select" id="edit-status-input" name="status">
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
@@ -225,79 +198,283 @@
     </div>
     <!-- /edit Catgory -->
 
-    <!-- delete modal -->
-    <div class="modal fade" id="delete_category">
-        <div class="modal-dialog modal-dialog-centered modal-sm rounded-0">
-            <div class="modal-content rounded-0">
-                <div class="modal-body p-4 text-center position-relative">
-                    <div class="mb-3 position-relative z-1">
-                        <span class="avatar avatar-xl badge-soft-danger border-0 text-danger rounded-circle"><i
-                                class="ti ti-trash fs-24"></i></span>
-                    </div>
-                    <h5 class="mb-1">Delete Confirmation</h5>
-                    <p class="mb-3">Are you sure you want to remove category you selected.</p>
-                    <form id="delete-form" action="" method="POST" style="display:inline;">
-                        <div class="d-flex justify-content-center">
-                            <a href="#" class="btn btn-light position-relative z-1 me-2 w-100"
-                                data-bs-dismiss="modal">Cancel</a>
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger position-relative z-1 w-100"
-                                title="Delete" data-bs-dismiss="modal">Delete</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- delete modal -->
-
+    <!-- DataTables Scripts -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script>
-        // create category script
-        document.addEventListener('DOMContentLoaded', function () {
-            var createForm = document.getElementById('create-form');
-            createForm.action = '{{ route("category.store") }}';
-        });
+        $(document).ready(function () {
+            var table = $('#categories-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route("category.index") }}',
+                columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'name', name: 'name' },
+                    { data: 'image', name: 'image' },
+                    { data: 'status', name: 'status' },
+                    { data: 'date', name: 'date' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false }
+                ]
+            });
 
-        //edit category script
-        document.addEventListener('DOMContentLoaded', function () {
-            var editOffcanvas = document.getElementById('offcanvas_edit');
-            var editForm = document.getElementById('edit-form');
+            // Refresh button click event
+            $(document).on('click', '.refresh-btn', function () {
+                table.ajax.reload(null, false); // false = stay on same page
+            });
 
-            // Delegate click event for edit buttons
-            document.querySelector('#categories-table').addEventListener('click', function (e) {
-                if (e.target.closest('.edit-btn')) {
-                    var button = e.target.closest('.edit-btn');
-                    var categoryId = button.getAttribute('data-id');
+            // Create form AJAX submission
+            $("#create-form").submit(function (e) {
+                e.preventDefault();
 
-                    // Fetch category data via AJAX
-                    fetch('{{ url("admin/category") }}/' + categoryId)
-                        .then(response => response.json())
-                        .then(data => {
-                            // form fields
-                            editForm.action = '{{ url("admin/category") }}/' + categoryId;
-                            editForm.querySelector('#category-input').value = data.name || '';
-                            editForm.querySelector('#status-input').value = data.status || '';
+                // Get values
+                let name = $("#name-input").val();
+                let status = $("#status-input").val();
+                let image = $("#image-input")[0].files[0];
 
-                            var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(editOffcanvas);
-                            offcanvas.show();
-                        })
-                        .catch(error => {
-                            console.error('Error fetching category data:', error);
-                        });
+                // Basic validation
+                if (status === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'status is required.'
+                    });
+                    return false;
                 }
-            });
-        });
 
-        // delete category script
-        document.addEventListener('DOMContentLoaded', function () {
-            var deleteModal = document.getElementById('delete_category');
-            deleteModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget;
-                var categoryId = button.getAttribute('data-id');
-                var form = document.getElementById('delete-form');
-                form.action = '{{ route("category.index") }}/' + categoryId;
+                if (name === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'name is required.'
+                    });
+                    return false;
+                }
+
+                // Image validation if provided
+                if (image) {
+                    let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/PNG', 'image/JPG'];
+                    if (!allowedTypes.includes(image.type)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
+                        });
+                        return false;
+                    }
+                    if (image.size > 5120 * 1024) { // 5MB
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Image size must be less than 5MB.'
+                        });
+                        return false;
+                    }
+                }
+
+                // Prepare FormData
+                let formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('name', name);
+                formData.append('status', status);
+                if (image) {
+                    formData.append('image', image);
+                }
+
+                // AJAX request
+                $.ajax({
+                    url: '{{ route("category.store") }}',
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.success
+                        });
+                        // Reset + clear preview
+                        $("#create-form")[0].reset();
+                        $('#offcanvas_add_2').offcanvas('hide');
+                        table.ajax.reload(null, false);
+                    },
+                    error: function (xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something went wrong.'
+                        });
+                    }
+                });
             });
+
+
+            // Edit button click event + form submission
+            $(document).on('click', '.edit-btn', function () {
+                var id = $(this).data('id');
+
+                // Fetch existing data
+                $.ajax({
+                    url: '{{ route("category.show", ":id") }}'.replace(':id', id),
+                    method: 'GET',
+                    success: function (data) {
+                        // Fill form fields
+                        if (data.image) {
+                            $("#edit-image-preview").attr("src", "/" + data.image).show();
+                        } else {
+                            $("#edit-image-preview").hide();
+                        }
+                        $('#edit-status-input').val(data.status);
+                        $('#edit-name-input').val(data.name);
+                        $('#edit-form').attr('action', '{{ route("category.update", ":id") }}'.replace(':id', id));
+
+                        // Show the offcanvas/modal
+                        $('#offcanvas_edit').offcanvas('show');
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something went wrong while fetching data.'
+                        });
+                    }
+                });
+            });
+
+            // Edit form AJAX submission
+            $("#edit-form").submit(function (e) {
+                e.preventDefault();
+
+                let status = $("#edit-status-input").val();
+                let name = $("#edit-name-input").val();
+                let image = $("#edit-image-input")[0].files[0];
+
+                // Validation
+                if (status === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Status is required.'
+                    });
+                    return false;
+                }
+
+                if (name === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'name is required.'
+                    });
+                    return false;
+                }
+
+                if (image) {
+                    let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+                    if (!allowedTypes.includes(image.type)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
+                        });
+                        return false;
+                    }
+                    if (image.size > 5120 * 1024) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Image size must be less than 5MB.'
+                        });
+                        return false;
+                    }
+                }
+
+                // Prepare FormData
+                let formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('_method', 'PUT');
+                formData.append('name', name);
+                formData.append('status', status);
+                if (image) {
+                    formData.append('image', image);
+                }
+
+                // AJAX request
+                $.ajax({
+                    url: $("#edit-form").attr('action'),
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.success
+                        });
+                        // Reset + clear preview
+                        $("#edit-form")[0].reset();
+                        $("#edit-image-preview").hide().attr("src", "");
+                        $('#offcanvas_edit').offcanvas('hide');
+                        if (typeof table !== "undefined") {
+                            table.ajax.reload(null, false);
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something went wrong while updating.'
+                        });
+                    }
+                });
+            });
+
+            // Delete form submission with SweetAlert confirmation
+            $(document).on('click', '.delete-btn', function (e) {
+                e.preventDefault();
+
+                let id = $(this).data('id');
+                let url = $(this).data('url');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This record will be deleted permanently!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                _method: 'DELETE'
+                            },
+                            success: function (response) {
+                                Swal.fire('Deleted!', response.message, 'success');
+                                $('#category-table').DataTable().ajax.reload(); // reload table
+                            },
+                            error: function (xhr) {
+                                Swal.fire('Error!', 'Something went wrong.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+
+
+            // Show success message from session (for delete)
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: '{{ session("success") }}'
+                });
+            @endif
         });
     </script>
 </body>

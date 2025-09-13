@@ -228,7 +228,7 @@
                         <div class="mb-3">
                             <label for="category-select" class="form-label">Status</label>
                             <select class="form-select" id="status-select" name="status">
-                                <option value="">Select Status</option>
+                                
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
@@ -283,7 +283,7 @@
                         <div class="mb-3">
                             <label for="category-select" class="form-label">Status</label>
                             <select class="form-select" id="status-input" name="status">
-                                <option value="">Select Status</option>
+                                
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>

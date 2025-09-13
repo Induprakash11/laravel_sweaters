@@ -12,7 +12,7 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/admin/dashboard', [ProfileController::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/admin', [ProfileController::class,'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/admin/profile', [ProfileController::class, 'edit'])->name('profile.edit');

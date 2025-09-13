@@ -165,7 +165,6 @@
                         <div class="mb-3">
                             <label for="category-input" class="form-label">Status</label>
                             <select class="form-select" id="status-input" name="status">
-                                <option value="">Select Status</option>
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
@@ -205,10 +204,10 @@
                     <div class="col-lg-12">
                         <div class="mb-3">
                             <label for="category-input" class="form-label">Category</label>
-                            <select class="form-select" id="category-input" name="category">
+                            <select class="form-select" id="edit-category-input" name="category">
                                 <option value="">Select Category</option>
                                 @foreach ($categories as $cate)
-                                    <option value="{{ $cate->name }}">{{ $cate->name }}</option>
+                                    <option value="{{ $cate->id }}">{{ $cate->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -217,43 +216,42 @@
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label for="brand-input" class="form-label">Brand</label>
-                            <input type="text" class="form-control" id="brand-input" name="brand"
+                            <input type="text" class="form-control" id="edit-brand-input" name="brand"
                                 placeholder="Enter brand">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label for="gauge-input" class="form-label">Gauge</label>
-                            <input type="text" class="form-control" id="gauge-input" name="gauge"
+                            <input type="text" class="form-control" id="edit-gauge-input" name="gauge"
                                 placeholder="Enter gauge">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label for="construction-input" class="form-label">Construction</label>
-                            <input type="text" class="form-control" id="construction-input" name="construction"
+                            <input type="text" class="form-control" id="edit-construction-input" name="construction"
                                 placeholder="Enter construction">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label for="fabric-input" class="form-label">Fabric</label>
-                            <input type="text" class="form-control" id="fabric-input" name="fabric"
+                            <input type="text" class="form-control" id="edit-fabric-input" name="fabric"
                                 placeholder="Enter fabric">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label for="moq-input" class="form-label">Moq</label>
-                            <input type="text" class="form-control" id="moq-input" name="moq"
+                            <input type="text" class="form-control" id="edit-moq-input" name="moq"
                                 placeholder="Enter MOQ">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
                             <label for="status-input" class="form-label">Status</label>
-                            <select class="form-select" id="status-input" name="status">
-                                <option value="">Select Status</option>
+                            <select class="form-select" id="edit-status-input" name="status">
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
@@ -262,7 +260,8 @@
                     <div class="col-lg-12">
                         <div class="mb-3">
                             <label for="image-input" class="form-label">Image</label>
-                            <input class="form-control" type="file" id="image-input" name="image">
+                            <img id="edit-image-preview" src="" alt="Preview" style="max-height:80px; display:none;">
+                            <input class="form-control" type="file" id="edit-image-input" name="image">
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-end">
@@ -309,12 +308,12 @@
                 e.preventDefault();
 
                 // Get values
-                let category = $("#category-input");
-                let brand = $("#brand-input");
-                let gauge = $("#gauge-input");
-                let construction = $("#construction-input");
-                let fabric = $("#fabric-input");
-                let moq = $("#moq-input");
+                let category = $("#category-input").val();
+                let brand = $("#brand-input").val();
+                let gauge = $("#gauge-input").val();
+                let construction = $("#construction-input").val();
+                let fabric = $("#fabric-input").val();
+                let moq = $("#moq-input").val();
                 let status = $("#status-input").val();
                 let image = $("#image-input")[0].files[0];
 
@@ -430,7 +429,9 @@
                             title: 'Success',
                             text: response.success
                         });
-                        $("#create-form")[0].reset();
+                        // Reset + clear preview
+                        $("#edit-form")[0].reset();
+                        $("#edit-image-preview").hide().attr("src", "");
                         $('#offcanvas_add_2').offcanvas('hide');
                         table.ajax.reload(null, false);
                     },
@@ -455,13 +456,19 @@
                     method: 'GET',
                     success: function (data) {
                         // Fill form fields
-                        $('#status-input').val(data.status);
-                        $('#gauge-input').val(data.gauge);
-                        $('#construction-input').val(data.construction);
-                        $('#fabric-input').val(data.fabric);
-                        $('#moq-input').val(data.moq)
-                        $('#category-input').val(data.category);
-                        $('#brand-input').val(data.brand);
+                        if (data.image) {
+                            $("#edit-image-preview").attr("src", "/" + data.image).show();
+                        } else {
+                            $("#edit-image-preview").hide();
+                        }
+
+                        $('#edit-status-input').val(data.status);
+                        $('#edit-gauge-input').val(data.gauge);
+                        $('#edit-construction-input').val(data.construction);
+                        $('#edit-fabric-input').val(data.fabric);
+                        $('#edit-moq-input').val(data.moq)
+                        $('#edit-category-input').val(data.category);
+                        $('#edit-brand-input').val(data.brand);
                         $('#edit-form').attr('action', '{{ route("products.update", ":id") }}'.replace(':id', id));
 
                         // Show the offcanvas/modal
@@ -481,14 +488,14 @@
             $("#edit-form").submit(function (e) {
                 e.preventDefault();
 
-                let status = $("#status-input").val();
-                let gauge = $("#gauge-input").val();
-                let construction = $("#construction-input").val();
-                let fabric = $("#fabric-input").val();
-                let moq = $("#moq-input").val();
-                let category = $("#category-input").val();
-                let brand = $("#brand-input").val();
-                let image = $("#edit-form #image-input")[0].files[0];
+                let status = $("#edit-status-input").val();
+                let category = $("#edit-category-input").val();
+                let brand = $("#edit-brand-input").val();
+                let gauge = $("#edit-gauge-input").val();
+                let construction = $("#edit-construction-input").val();
+                let fabric = $("#edit-fabric-input").val();
+                let moq = $("#edit-moq-input").val();
+                let image = $("#edit-image-input")[0].files[0];
 
                 // Validation
                 if (status === "") {
@@ -602,7 +609,9 @@
                             title: 'Success',
                             text: response.success
                         });
+                        // Reset + clear preview
                         $("#edit-form")[0].reset();
+                        $("#edit-image-preview").hide().attr("src", "");
                         $('#offcanvas_edit').offcanvas('hide');
                         if (typeof table !== "undefined") {
                             table.ajax.reload(null, false);
