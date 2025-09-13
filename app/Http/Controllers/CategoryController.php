@@ -13,9 +13,9 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $categories = Category::all();
+        $categories_count = Category::count();
         if ($request->ajax()) {
-            return DataTables::of(Category::query())
+            return DataTables::of(Category::select('id', 'name', 'image', 'status', 'date'))
                 ->filterColumn('id', function ($query, $keyword) {
                     $query->where('id', $keyword);
                 })
@@ -44,8 +44,7 @@ class CategoryController extends Controller
                 ->rawColumns(['image', 'action'])
                 ->make(true);
         }
-        $categories = Category::all();
-        return view("admin.category.index", compact("categories"));
+        return view("admin.category.index", compact("categories_count"));
     }
 
     /**

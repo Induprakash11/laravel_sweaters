@@ -14,9 +14,9 @@ class BannerController extends Controller
      */
     public function index(Request $request)
     {
-        $banner = Banner::all();
+        $banner_count = Banner::count();
         if ($request->ajax()) {
-            return DataTables::of(Banner::query())
+            return DataTables::of(Banner::select('id', 'image', 'status'))
                 ->filterColumn('id', function ($query, $keyword) {
                     $query->where('id', $keyword);
                 })
@@ -46,7 +46,7 @@ class BannerController extends Controller
                 ->make(true);
         }
 
-        return view("admin.banner.index", compact("banner"));
+        return view("admin.banner.index", compact("banner_count"));
     }
 
     /**

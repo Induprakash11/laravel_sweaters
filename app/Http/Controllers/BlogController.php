@@ -13,7 +13,7 @@ class BlogController extends Controller
      */
     public function index(Request $request)
     {
-        $blogs = BlogReport::all();
+        $blogs_count = BlogReport::count();
         if ($request->ajax()) {
             return DataTables::of(BlogReport::query())
                 ->filterColumn('id', function ($query, $keyword) {
@@ -45,7 +45,7 @@ class BlogController extends Controller
                 ->make(true);
         }
 
-        return view("admin.blogs.index", compact("blogs"));
+        return view("admin.blogs.index", compact("blogs_count"));
     }
 
     /**

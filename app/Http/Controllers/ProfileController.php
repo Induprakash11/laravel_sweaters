@@ -17,9 +17,9 @@ class ProfileController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $products = Product::all();
-        $blogs = BlogReport::all();
-        $category = Category::all();
+        $products = Product::count();
+        $blogs = BlogReport::count();
+        $category = Category::count();
 
         return view("admin.dashboard", compact("user", "products", "blogs", "category"));
     }

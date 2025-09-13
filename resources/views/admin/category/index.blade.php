@@ -27,7 +27,7 @@
                 <div class="d-flex align-items-center justify-content-between gap-2 mb-4 flex-wrap">
                     <div>
                         <h4 class="mb-1">Category<span
-                                class="badge badge-soft-primary ms-2">{{ count($categories) }}</span></h4>
+                                class="badge badge-soft-primary ms-2">{{ $categories_count }}</span></h4>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 p-0">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
@@ -79,6 +79,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <div id="loading">
+                                                <p>Datas Loading...</p>
+                                            </div>
                                         </tbody>
                                     </table>
                                 </div>
@@ -198,16 +201,20 @@
     </div>
     <!-- /edit Catgory -->
 
+
+    
+
     <!-- DataTables Scripts -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script>
-        $(document).ready(function () {
+        document.addEventListener("DOMContentLoaded", function () {
             var table = $('#categories-table').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route("category.index") }}',
+                deferRender: true,
+                
+                pageLength: 10,
+                responsive: true,
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'name', name: 'name' },
@@ -215,8 +222,14 @@
                     { data: 'status', name: 'status' },
                     { data: 'date', name: 'date' },
                     { data: 'action', name: 'action', orderable: false, searchable: false }
-                ]
+                ],
+                dom: 'lfrtip',
+                responsive: true,
+                initComplete: function () {
+                    $('#loading').hide();
+                }
             });
+        });
 
             // Refresh button click event
             $(document).on('click', '.refresh-btn', function () {
@@ -475,7 +488,6 @@
                     text: '{{ session("success") }}'
                 });
             @endif
-        });
     </script>
 </body>
 

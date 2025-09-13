@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BlogReport;
 use App\Models\Category;
-use App\Models\Gallery;
 use App\Models\Product;
-use App\Models\SocialMedia;
 use App\Models\Banner;
 use App\Models\Contact;
 use App\Models\EventReport;
@@ -14,8 +12,8 @@ use App\Models\Profile;
 use App\Models\SocialMediaUrl;
 use App\Models\TestimonialReport;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 use function decodeId;
 
@@ -24,17 +22,36 @@ class HomeController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
         $users = Auth::user();
-        $banner = Banner::all();
-        $profile = Profile::first();
-        $category = Category::all();
-        $blogs = BlogReport::all();
-        $products = Product::all();
-        $socialMedia = SocialMedia::all();
-        $socialMediaUrl = SocialMediaUrl::all();
-        return view("index", compact("socialMedia", "socialMediaUrl", "users", 'profile', "products", "category", "blogs", "banner"));
+
+        $banner = Cache::remember('banner', 3600, function () {
+            return Banner::all();
+        });
+
+        $profile = Cache::remember('profile', 3600, function () {
+            return Profile::first();
+        });
+
+        $category = Cache::remember('category', 3600, function () {
+            return Category::all();
+        });
+
+        $blogs = Cache::remember('blogs', 3600, function () {
+            return BlogReport::limit(10)->get();
+        });
+
+        $products = Cache::remember('products', 3600, function () {
+            return Product::limit(10)->get();
+        });
+
+        $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
+            return SocialMediaUrl::all();
+        });
+
+        return view("index", compact( "socialMediaUrl", "users", 'profile', "products", "category", "blogs", "banner"));
     }
 
     /**
@@ -43,14 +60,20 @@ class HomeController extends Controller
     public function about()
     {
         $users = Auth::user();
-        $banner = Banner::all();
-        $profile = Profile::first();
-        $category = Category::all();
-        $blogs = BlogReport::all();
-        $products = Product::all();
-        $socialMedia = SocialMedia::all();
-        $socialMediaUrl = SocialMediaUrl::all();
-        return view("about", compact("socialMedia", "socialMediaUrl", "users", "profile", "products", "category", "blogs", "banner"));
+
+        $profile = Cache::remember('profile', 3600, function () {
+            return Profile::first();
+        });
+
+        $category = Cache::remember('category', 3600, function () {
+            return Category::all();
+        });
+
+        $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
+            return SocialMediaUrl::all();
+        });
+
+        return view("about", compact("socialMediaUrl", "users", "profile", "category"));
     }
     
     /**
@@ -58,17 +81,22 @@ class HomeController extends Controller
      */
 
     public function contact()
-    {   
+    {
         $users = Auth::user();
-        $banner = Banner::all();
-        $profile = Profile::first();
-        $category = Category::all();
-        $blogs = BlogReport::all();
-        $products = Product::all();
-        $socialMedia = SocialMedia::all();
-        $socialMediaUrl = SocialMediaUrl::all();
-        
-        return view("contact", compact("socialMedia", "socialMediaUrl", "users", "profile", "products", "category", "blogs", "banner"));
+
+        $profile = Cache::remember('profile', 3600, function () {
+            return Profile::first();
+        });
+
+        $category = Cache::remember('category', 3600, function () {
+            return Category::all();
+        });
+
+        $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
+            return SocialMediaUrl::all();
+        });
+
+        return view("contact", compact( "socialMediaUrl", "users", "profile", "category"));
     }
     public function contactstore(Request $request)
     {
@@ -87,20 +115,29 @@ class HomeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function product(string $id) 
+    public function product(string $id)
     {
         $users = Auth::user();
-        $banner = Banner::all();
-        $profile = Profile::first();
-        $category = Category::all();
-        $blogs = BlogReport::all();
-        $products = Product::all();
-        $socialMedia = SocialMedia::all();
-        $socialMediaUrl = SocialMediaUrl::all();
+
+        $profile = Cache::remember('profile', 3600, function () {
+            return Profile::first();
+        });
+
+        $category = Cache::remember('category', 3600, function () {
+            return Category::all();
+        });
+
+        $products = Cache::remember('products', 3600, function () {
+            return Product::limit(50)->get();
+        });
+
+        $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
+            return SocialMediaUrl::all();
+        });
 
         $decode = decodeId($id);
         $getProducts = Product::where('category', $decode)->get();
-        return view('product', compact('getProducts',  "socialMedia", "socialMediaUrl", "users", "profile", "products", "category", "blogs", "banner"));
+        return view('product', compact('getProducts',   "socialMediaUrl", "users", "profile", "products", "category"));
     }
 
     /**
@@ -109,17 +146,26 @@ class HomeController extends Controller
     public function productDetails(string $id)
     {
         $users = Auth::user();
-        $banner = Banner::all();
-        $profile = Profile::first();
-        $category = Category::all();
-        $blogs = BlogReport::all();
-        $products = Product::all();
-        $socialMedia = SocialMedia::all();
-        $socialMediaUrl = SocialMediaUrl::all();
+
+        $profile = Cache::remember('profile', 3600, function () {
+            return Profile::first();
+        });
+
+        $category = Cache::remember('category', 3600, function () {
+            return Category::all();
+        });
+
+        $products = Cache::remember('products', 3600, function () {
+            return Product::limit(50)->get();
+        });
+
+        $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
+            return SocialMediaUrl::all();
+        });
 
         $decode = decodeId($id);
         $getProductDetails = Product::where('id', $decode)->first();
-        return view('productDetails', compact('getProductDetails', "socialMedia", "socialMediaUrl", "users", "profile", "products", "category", "blogs", "banner"));
+        return view('productDetails', compact('getProductDetails',  "socialMediaUrl", "users", "profile", "products", "category"));
     }
 
     /**
@@ -128,14 +174,24 @@ class HomeController extends Controller
     public function blog()
     {
         $users = Auth::user();
-        $banner = Banner::all();
-        $profile = Profile::first();
-        $category = Category::all();
-        $blogs = BlogReport::all();
-        $products = Product::all();
-        $socialMedia = SocialMedia::all();
-        $socialMediaUrl = SocialMediaUrl::all();
-        return view("blog", compact("socialMedia", "socialMediaUrl", "users", 'profile', "products", "category", "blogs", "banner"));
+
+        $profile = Cache::remember('profile', 3600, function () {
+            return Profile::first();
+        });
+
+        $category = Cache::remember('category', 3600, function () {
+            return Category::all();
+        });
+
+        $blogs = Cache::remember('blogs', 3600, function () {
+            return BlogReport::limit(10)->get();
+        });
+
+        $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
+            return SocialMediaUrl::all();
+        });
+
+        return view("blog", compact( "socialMediaUrl", "users", 'profile', "category", "blogs"));
     }
 
     /**
@@ -144,49 +200,73 @@ class HomeController extends Controller
     public function blogDetails(string $id)
     {
         $users = Auth::user();
-        $banner = Banner::all();
-        $profile = Profile::first();
-        $category = Category::all();
-        $blogs = BlogReport::all();
-        $products = Product::all();
-        $socialMedia = SocialMedia::all();
-        $socialMediaUrl = SocialMediaUrl::all();
+
+        $profile = Cache::remember('profile', 3600, function () {
+            return Profile::first();
+        });
+
+        $category = Cache::remember('category', 3600, function () {
+            return Category::all();
+        });
+
+        $blogs = Cache::remember('blogs', 3600, function () {
+            return BlogReport::limit(50)->get();
+        });
+
+        $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
+            return SocialMediaUrl::all();
+        });
 
         $decode = decodeId($id);
         $getblogDetails = BlogReport::where('id', $decode)->first();
-        return view('blogDetails', compact('getblogDetails', "socialMedia", "socialMediaUrl", "users", "profile", "products", "category", "blogs", "banner"));
+        return view('blogDetails', compact('getblogDetails',  "socialMediaUrl", "users", "profile", "category", "blogs"));
     }
 
     public function service()
     {
         $users = Auth::user();
-        $banner = Banner::all();
-        $profile = Profile::first();
-        $category = Category::all();
-        $blogs = BlogReport::all();
-        $events = EventReport::all();
-        $products = Product::all();
-        $socialMedia = SocialMedia::all();
-        $socialMediaUrl = SocialMediaUrl::all();
 
-        return view('service', compact('socialMedia', 'events', 'socialMediaUrl', 'users', 'profile', 'products', 'category', 'blogs', 'banner'));
+        $profile = Cache::remember('profile', 3600, function () {
+            return Profile::first();
+        });
+
+        $category = Cache::remember('category', 3600, function () {
+            return Category::all();
+        });
+
+        $events = Cache::remember('events', 3600, function () {
+            return EventReport::all();
+        });
+
+        $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
+            return SocialMediaUrl::all();
+        });
+
+        return view('service', compact( 'events', 'socialMediaUrl', 'users', 'profile', 'category'));
 
     }
 
     public function testimonial()
     {
         $users = Auth::user();
-        $banner = Banner::all();
-        $profile = Profile::first();
-        $category = Category::all();
-        $blogs = BlogReport::all();
-        $events = EventReport::all();
-        $products = Product::all();
-        $testimonials = TestimonialReport::all();
-        $socialMedia = SocialMedia::all();
-        $socialMediaUrl = SocialMediaUrl::all();
 
-        return view('testimonial', compact('socialMedia', 'testimonials', 'events', 'socialMediaUrl', 'users', 'profile', 'products', 'category', 'blogs', 'banner'));
+        $profile = Cache::remember('profile', 3600, function () {
+            return Profile::first();
+        });
+
+        $category = Cache::remember('category', 3600, function () {
+            return Category::all();
+        });
+
+        $testimonials = Cache::remember('testimonials', 3600, function () {
+            return TestimonialReport::all();
+        });
+
+        $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
+            return SocialMediaUrl::all();
+        });
+
+        return view('testimonial', compact( 'testimonials',  'socialMediaUrl', 'users', 'profile',  'category'));
 
     }
 

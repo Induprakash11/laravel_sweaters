@@ -26,7 +26,7 @@
                 <!-- Page Header -->
                 <div class="d-flex align-items-center justify-content-between gap-2 mb-4 flex-wrap">
                     <div>
-                        <h4 class="mb-1">Banner<span class="badge badge-soft-primary ms-2">{{ count($banner) }}</span>
+                        <h4 class="mb-1">Banner<span class="badge badge-soft-primary ms-2">{{ $banner_count }}</span>
                         </h4>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 p-0">
@@ -78,6 +78,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <div id="loading">
+                                                <p>Datas Loading...</p>
+                                            </div>
                                         </tbody>
                                     </table>
                                 </div>
@@ -184,255 +187,262 @@
 
 
     <!-- DataTables Scripts -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
 
     <script>
-        $(document).ready(function () {
+        $(document).ready( function () {
             var table = $('#banner-table').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route("banner.index") }}',
+                deferRender: true,
+                
+                pageLength: 10,
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'image', name: 'image', orderable: false, searchable: false },
                     { data: 'status', name: 'status' },
                     { data: 'action', name: 'action', orderable: false, searchable: false }
-                ]
-            });
-
-            // Refresh button click event
-            $(document).on('click', '.refresh-btn', function () {
-                table.ajax.reload(null, false); // false = stay on same page
-            });
-
-            // Create form AJAX submission
-            $("#create-form").submit(function (e) {
-                e.preventDefault();
-
-                // Get values
-                let status = $("#status-input").val();
-                let image = $("#image-input")[0].files[0];
-
-                // Basic validation
-                if (status === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Status is required.'
-                    });
-                    return false;
+                ],
+                dom: 'lfrtip',
+                responsive: true,
+                initComplete: function () {
+                    $('#loading').hide();
                 }
-
-                // Image validation if provided
-                if (image) {
-                    let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/PNG', 'image/JPG'];
-                    if (!allowedTypes.includes(image.type)) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
-                        });
-                        return false;
-                    }
-                    if (image.size > 5120 * 1024) { // 5MB
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Image size must be less than 5MB.'
-                        });
-                        return false;
-                    }
-                }
-
-                // Prepare FormData
-                let formData = new FormData();
-                formData.append('_token', '{{ csrf_token() }}');
-                formData.append('status', status);
-                if (image) {
-                    formData.append('image', image);
-                }
-
-                // AJAX request
-                $.ajax({
-                    url: '{{ route("banner.store") }}',
-                    method: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: response.success
-                        });
-                        // Reset + clear preview
-                        $("#edit-form")[0].reset();
-                        $("#edit-image-preview").hide().attr("src", "");
-                        $('#offcanvas_add_2').offcanvas('hide');
-                        table.ajax.reload(null, false);
-                    },
-                    error: function (xhr) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Something went wrong.'
-                        });
-                    }
-                });
             });
-
-
-            // Edit button click event + form submission
-            $(document).on('click', '.edit-btn', function () {
-                var id = $(this).data('id');
-
-                // Fetch existing data
-                $.ajax({
-                    url: '{{ route("banner.show", ":id") }}'.replace(':id', id),
-                    method: 'GET',
-                    success: function (data) {
-                        // Fill form fields
-                        $('#edit-status-input').val(data.status);
-                        $('#edit-form').attr('action', '{{ route("banner.update", ":id") }}'.replace(':id', id));
-
-                        // Show the offcanvas/modal
-                        $('#offcanvas_edit').offcanvas('show');
-                    },
-                    error: function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Something went wrong while fetching data.'
-                        });
-                    }
-                });
-            });
-
-            // Edit form AJAX submission
-            $("#edit-form").submit(function (e) {
-                e.preventDefault();
-
-                let status = $("#edit-status-input").val();
-                let image = $("#edit-image-input")[0].files[0];
-
-                // Validation
-                if (status === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Status is required.'
-                    });
-                    return false;
-                }
-
-                if (image) {
-                    let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
-                    if (!allowedTypes.includes(image.type)) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
-                        });
-                        return false;
-                    }
-                    if (image.size > 5120 * 1024) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Image size must be less than 5MB.'
-                        });
-                        return false;
-                    }
-                }
-
-                // Prepare FormData
-                let formData = new FormData();
-                formData.append('_token', '{{ csrf_token() }}');
-                formData.append('_method', 'PUT');
-                formData.append('status', status);
-                if (image) {
-                    formData.append('image', image);
-                }
-
-                // AJAX request
-                $.ajax({
-                    url: $("#edit-form").attr('action'),
-                    method: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: response.success
-                        });
-                        // Reset + clear preview
-                        $("#edit-form")[0].reset();
-                        $("#edit-image-preview").hide().attr("src", "");
-                        $('#offcanvas_edit').offcanvas('hide');
-                        if (typeof table !== "undefined") {
-                            table.ajax.reload(null, false);
-                        }
-                    },
-                    error: function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Something went wrong while updating.'
-                        });
-                    }
-                });
-            });
-
-            // Delete form submission with SweetAlert confirmation
-            $(document).on('click', '.delete-btn', function (e) {
-                e.preventDefault();
-
-                let id = $(this).data('id');
-                let url = $(this).data('url');
-
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "This record will be deleted permanently!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: url,
-                            type: 'POST',
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                                _method: 'DELETE'
-                            },
-                            success: function (response) {
-                                Swal.fire('Deleted!', response.message, 'success');
-                                $('#banner-table').DataTable().ajax.reload(); // reload table
-                            },
-                            error: function (xhr) {
-                                Swal.fire('Error!', 'Something went wrong.', 'error');
-                            }
-                        });
-                    }
-                });
-            });
-
-
-            // Show success message from session (for delete)
-            @if(session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: '{{ session("success") }}'
-                });
-            @endif
         });
+
+        // Refresh button click event
+        $(document).on('click', '.refresh-btn', function () {
+            table.ajax.reload(null, false); // false = stay on same page
+        });
+
+
+        // Create form AJAX submission
+        $("#create-form").submit(function (e) {
+            e.preventDefault();
+
+            // Get values
+            let status = $("#status-input").val();
+            let image = $("#image-input")[0].files[0];
+
+            // Basic validation
+            if (status === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Status is required.'
+                });
+                return false;
+            }
+
+            // Image validation if provided
+            if (image) {
+                let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/PNG', 'image/JPG'];
+                if (!allowedTypes.includes(image.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
+                    });
+                    return false;
+                }
+                if (image.size > 5120 * 1024) { // 5MB
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Image size must be less than 5MB.'
+                    });
+                    return false;
+                }
+            }
+
+            // Prepare FormData
+            let formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('status', status);
+            if (image) {
+                formData.append('image', image);
+            }
+
+            // AJAX request
+            $.ajax({
+                url: '{{ route("banner.store") }}',
+                method: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.success
+                    });
+                    // Reset + clear preview
+                    $("#edit-form")[0].reset();
+                    $("#edit-image-preview").hide().attr("src", "");
+                    $('#offcanvas_add_2').offcanvas('hide');
+                    table.ajax.reload(null, false);
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong.'
+                    });
+                }
+            });
+        });
+
+
+        // Edit button click event + form submission
+        $(document).on('click', '.edit-btn', function () {
+            var id = $(this).data('id');
+
+            // Fetch existing data
+            $.ajax({
+                url: '{{ route("banner.show", ":id") }}'.replace(':id', id),
+                method: 'GET',
+                success: function (data) {
+                    // Fill form fields
+                    $('#edit-status-input').val(data.status);
+                    $('#edit-form').attr('action', '{{ route("banner.update", ":id") }}'.replace(':id', id));
+
+                    // Show the offcanvas/modal
+                    $('#offcanvas_edit').offcanvas('show');
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong while fetching data.'
+                    });
+                }
+            });
+        });
+
+        // Edit form AJAX submission
+        $("#edit-form").submit(function (e) {
+            e.preventDefault();
+
+            let status = $("#edit-status-input").val();
+            let image = $("#edit-image-input")[0].files[0];
+
+            // Validation
+            if (status === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Status is required.'
+                });
+                return false;
+            }
+
+            if (image) {
+                let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+                if (!allowedTypes.includes(image.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
+                    });
+                    return false;
+                }
+                if (image.size > 5120 * 1024) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Image size must be less than 5MB.'
+                    });
+                    return false;
+                }
+            }
+
+            // Prepare FormData
+            let formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('_method', 'PUT');
+            formData.append('status', status);
+            if (image) {
+                formData.append('image', image);
+            }
+
+            // AJAX request
+            $.ajax({
+                url: $("#edit-form").attr('action'),
+                method: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.success
+                    });
+                    // Reset + clear preview
+                    $("#edit-form")[0].reset();
+                    $("#edit-image-preview").hide().attr("src", "");
+                    $('#offcanvas_edit').offcanvas('hide');
+                    if (typeof table !== "undefined") {
+                        table.ajax.reload(null, false);
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong while updating.'
+                    });
+                }
+            });
+        });
+
+        // Delete form submission with SweetAlert confirmation
+        $(document).on('click', '.delete-btn', function (e) {
+            e.preventDefault();
+
+            let id = $(this).data('id');
+            let url = $(this).data('url');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This record will be deleted permanently!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            _method: 'DELETE'
+                        },
+                        success: function (response) {
+                            Swal.fire('Deleted!', response.message, 'success');
+                            $('#banner-table').DataTable().ajax.reload(); // reload table
+                        },
+                        error: function (xhr) {
+                            Swal.fire('Error!', 'Something went wrong.', 'error');
+                        }
+                    });
+                }
+            });
+        });
+
+
+        // Show success message from session (for delete)
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '{{ session("success") }}'
+            });
+        @endif
     </script>
 </body>
 

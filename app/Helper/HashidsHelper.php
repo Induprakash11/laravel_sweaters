@@ -4,14 +4,16 @@ use Hashids\Hashids;
 
 if (!function_exists('encodeId')) {
     function encodeId($id) {
-        $hashids = new Hashids(env('APP_KEY'), 6);
+        $key = env('HASHIDS_SALT') ?: 'fallback_key';
+        $hashids = new Hashids($key, 6);
         return $hashids->encode($id);
     }
 }
 
 if (!function_exists('decodeId')) {
     function decodeId($hash) {
-        $hashids = new Hashids(env('APP_KEY'), 6);
+        $key = env('HASHIDS_SALT') ?: 'fallback_key';
+        $hashids = new Hashids($key, 6);
         return $hashids->decode($hash)[0] ?? null;
     }
 }

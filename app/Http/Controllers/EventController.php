@@ -16,7 +16,7 @@ class EventController extends Controller
      */
     public function index(Request $request)
     {
-        $events = EventReport::all();
+        $events_count = EventReport::count();
         if ($request->ajax()) {
             return DataTables::of(EventReport::query())
                 ->filterColumn('id', function ($query, $keyword) {
@@ -48,7 +48,7 @@ class EventController extends Controller
                 ->make(true);
         }
 
-        return view("admin.events.index", compact("events"));
+        return view("admin.events.index", compact("events_count"));
     }
 
     /**

@@ -377,8 +377,8 @@
         i18n : {
             'en' : {
                 CLOSE       : 'Close',
-                NEXT        : 'Next',
-                PREV        : 'Previous',
+                NEXT        : '>>',
+                PREV        : '<<',
                 ERROR       : 'The requested content cannot be loaded. <br/> Please try again later.',
                 PLAY_START  : 'Start slideshow',
                 PLAY_STOP   : 'Pause slideshow',

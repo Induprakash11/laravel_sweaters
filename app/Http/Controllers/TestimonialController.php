@@ -12,7 +12,7 @@ class TestimonialController extends Controller
      */
     public function index(Request $request)
     {   
-        $testimonial = TestimonialReport::all();
+        $testimonial_count = TestimonialReport::count();
         if ($request->ajax()) {
             return DataTables::of(TestimonialReport::query())
                 ->filterColumn('id', function ($query, $keyword) {
@@ -44,7 +44,7 @@ class TestimonialController extends Controller
                 ->make(true);
         }
 
-        return view("admin.testimonial.index", compact("testimonial"));
+        return view("admin.testimonial.index", compact("testimonial_count"));
     }
 
     /**

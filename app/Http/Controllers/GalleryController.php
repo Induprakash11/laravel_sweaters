@@ -14,7 +14,7 @@ class GalleryController extends Controller
      */
     public function index(Request $request)
     {   
-        $gallery = Gallery::all();
+        $gallery_count = Gallery::count();
         if ($request->ajax()) {
             return DataTables::of(Gallery::query())
                 ->filterColumn('id', function ($query, $keyword) {
@@ -46,7 +46,7 @@ class GalleryController extends Controller
                 ->make(true);
         }
 
-        return view("admin.gallery.index", compact("gallery"));
+        return view("admin.gallery.index", compact("gallery_count"));
     }
 
     /**

@@ -28,7 +28,7 @@
                 <div class="d-flex align-items-center justify-content-between gap-2 mb-4 flex-wrap">
                     <div>
                         <h4 class="mb-1">Testimonial<span
-                                class="badge badge-soft-primary ms-2">{{ count($testimonial) }}</span></h4>
+                                class="badge badge-soft-primary ms-2">{{ $testimonial_count }}</span></h4>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 p-0">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
@@ -81,6 +81,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <div id="loading">
+                                                <p>Datas Loading...</p>
+                                            </div>
                                         </tbody>
                                     </table>
                                 </div>
@@ -222,23 +225,28 @@
                         <div class="mt-2">
                             <label for="rating-select" class="form-label">Rating</label>
                             <div class="form-check form-check-inline">
-                                <input type="radio" id="edit-customRadio1" name="edit-rating" value="1" class="form-check-input">
+                                <input type="radio" id="edit-customRadio1" name="edit-rating" value="1"
+                                    class="form-check-input">
                                 <label class="form-check-label" for="customRadio1">1</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" id="edit-customRadio2" name="edit-rating" value="2" class="form-check-input">
+                                <input type="radio" id="edit-customRadio2" name="edit-rating" value="2"
+                                    class="form-check-input">
                                 <label class="form-check-label" for="customRadio2">2</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" id="edit-customRadio3" name="edit-rating" value="3" class="form-check-input">
+                                <input type="radio" id="edit-customRadio3" name="edit-rating" value="3"
+                                    class="form-check-input">
                                 <label class="form-check-label" for="customRadio3">3</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" id="edit-customRadio4" name="edit-rating" value="4" class="form-check-input">
+                                <input type="radio" id="edit-customRadio4" name="edit-rating" value="4"
+                                    class="form-check-input">
                                 <label class="form-check-label" for="customRadio4">4</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" id="edit-customRadio5" name="edit-rating" value="5" class="form-check-input">
+                                <input type="radio" id="edit-customRadio5" name="edit-rating" value="5"
+                                    class="form-check-input">
                                 <label class="form-check-label" for="customRadio5">5</label>
                             </div>
                         </div>
@@ -261,15 +269,15 @@
     <!-- /edit Testimonial -->
 
     <!-- DataTables Scripts -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script>
-        $(document).ready(function () {
+        $(function () {
             var table = $('#testimonial-table').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route("testimonial.index") }}',
+                deferRender: true,
+                pageLength: 10,
+                responsive: true,
                 columns: [{
                     data: 'id',
                     name: 'id'
@@ -314,315 +322,319 @@
                     orderable: false,
                     searchable: false
                 }
-                ]
+                ],
+                dom: 'lfrtip',
+                initComplete: function () {
+                    $('#loading').hide();
+                }
             });
-
-            // Refresh button click event
-            $(document).on('click', '.refresh-btn', function () {
-                table.ajax.reload(null, false); // false = stay on same page
-            });
-
-            // Create form AJAX submission
-            $("#create-form").submit(function (e) {
-                e.preventDefault();
-
-                // Get values
-                let name = $("#name-input").val();
-                let status = $("#status-input").val();
-                let message = $("#message-input").val();
-                let rating = $("input[name='rating']:checked").val();
-                let image = $("#image-input")[0].files[0];
-
-                // Basic validation
-                if (status === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'status is required.'
-                    });
-                    return false;
-                }
-
-                if (name === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'name is required.'
-                    });
-                    return false;
-                }
-
-                if (message === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'message is required.'
-                    });
-                    return false;
-                }
-
-                if (rating === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'rating is required.'
-                    });
-                    return false;
-                }
-
-                // Image validation if provided
-                if (image) {
-                    let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/PNG', 'image/JPG'];
-                    if (!allowedTypes.includes(image.type)) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
-                        });
-                        return false;
-                    }
-                    if (image.size > 5120 * 1024) { // 5MB
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Image size must be less than 5MB.'
-                        });
-                        return false;
-                    }
-                }
-
-                // Prepare FormData
-                let formData = new FormData();
-                formData.append('_token', '{{ csrf_token() }}');
-                formData.append('name', name);
-                formData.append('message', message);
-                formData.append('rating', rating);
-                formData.append('status', status);
-                if (image) {
-                    formData.append('image', image);
-                }
-
-                // AJAX request
-                $.ajax({
-                    url: '{{ route("testimonial.store") }}',
-                    method: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: response.success
-                        });
-                        // Reset + clear preview
-                        $("#edit-form")[0].reset();
-                        $("#edit-image-preview").hide().attr("src", "");
-                        $('#offcanvas_add_2').offcanvas('hide');
-                        table.ajax.reload(null, false);
-                    },
-                    error: function (xhr) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Something went wrong.'
-                        });
-                    }
-                });
-            });
-
-
-            // Edit button click event + form submission
-            $(document).on('click', '.edit-btn', function () {
-                var id = $(this).data('id');
-
-                // Fetch existing data
-                $.ajax({
-                    url: '{{ route("testimonial.show", ":id") }}'.replace(':id', id),
-                    method: 'GET',
-                    success: function (data) {
-                        // Fill form fields
-                        if (data.image) {
-                            $("#edit-image-preview").attr("src", "/" + data.image).show();
-                        } else {
-                            $("#edit-image-preview").hide();
-                        }
-
-                         $("input[name='edit-rating'][value='" + data.rating + "']").prop("checked", true);
-                        $('#edit-status-input').val(data.status);
-                        $('#edit-name-input').val(data.name);
-                        $('#edit-message-input').val(data.message);
-                        $('#edit-form').attr('action', '{{ route("testimonial.update", ":id") }}'.replace(':id', id));
-
-                        // Show the offcanvas/modal
-                        $('#offcanvas_edit').offcanvas('show');
-                    },
-                    error: function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Something went wrong while fetching data.'
-                        });
-                    }
-                });
-            });
-
-            // Edit form AJAX submission
-            $("#edit-form").submit(function (e) {
-                e.preventDefault();
-
-                let status = $("#edit-status-input").val();
-                let name = $("#edit-name-input").val();
-                let message = $("#edit-message-input").val();
-                let rating = $("input[name='edit-rating']:checked").val();
-                let image = $("#edit-image-input")[0].files[0];
-
-                // Validation
-                if (status === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Status is required.'
-                    });
-                    return false;
-                }
-
-                if (name === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'name is required.'
-                    });
-                    return false;
-                }
-
-                if (message === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'message is required.'
-                    });
-                    return false;
-                }
-
-                if (rating === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'rating is required.'
-                    });
-                    return false;
-                }
-
-                if (image) {
-                    let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
-                    if (!allowedTypes.includes(image.type)) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
-                        });
-                        return false;
-                    }
-                    if (image.size > 5120 * 1024) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Image size must be less than 5MB.'
-                        });
-                        return false;
-                    }
-                }
-
-                // Prepare FormData
-                let formData = new FormData();
-                formData.append('_token', '{{ csrf_token() }}');
-                formData.append('_method', 'PUT');
-                formData.append('name', name);
-                formData.append('message', message);
-                formData.append('rating', rating);
-                formData.append('status', status);
-                if (image) {
-                    formData.append('image', image);
-                }
-
-                // AJAX request
-                $.ajax({
-                    url: $("#edit-form").attr('action'),
-                    method: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: response.success
-                        });
-                        // Reset + clear preview
-                        $("#edit-form")[0].reset();
-                        $("#edit-image-preview").hide().attr("src", "");
-                        $('#offcanvas_edit').offcanvas('hide');
-                        if (typeof table !== "undefined") {
-                            table.ajax.reload(null, false);
-                        }
-                    },
-                    error: function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Something went wrong while updating.'
-                        });
-                    }
-                });
-            });
-
-            // Delete form submission with SweetAlert confirmation
-            $(document).on('click', '.delete-btn', function (e) {
-                e.preventDefault();
-
-                let id = $(this).data('id');
-                let url = $(this).data('url');
-
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "This record will be deleted permanently!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: url,
-                            type: 'POST',
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                                _method: 'DELETE'
-                            },
-                            success: function (response) {
-                                Swal.fire('Deleted!', response.message, 'success');
-                                $('#testimonial-table').DataTable().ajax.reload(); // reload table
-                            },
-                            error: function (xhr) {
-                                Swal.fire('Error!', 'Something went wrong.', 'error');
-                            }
-                        });
-                    }
-                });
-            });
-
-
-            // Show success message from session (for delete)
-            @if(session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: '{{ session("success") }}'
-                });
-            @endif
         });
+
+        // Refresh button click event
+        $(document).on('click', '.refresh-btn', function () {
+            table.ajax.reload(null, false); // false = stay on same page
+        });
+
+        // Create form AJAX submission
+        $("#create-form").submit(function (e) {
+            e.preventDefault();
+
+            // Get values
+            let name = $("#name-input").val();
+            let status = $("#status-input").val();
+            let message = $("#message-input").val();
+            let rating = $("input[name='rating']:checked").val();
+            let image = $("#image-input")[0].files[0];
+
+            // Basic validation
+            if (status === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'status is required.'
+                });
+                return false;
+            }
+
+            if (name === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'name is required.'
+                });
+                return false;
+            }
+
+            if (message === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'message is required.'
+                });
+                return false;
+            }
+
+            if (rating === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'rating is required.'
+                });
+                return false;
+            }
+
+            // Image validation if provided
+            if (image) {
+                let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/PNG', 'image/JPG'];
+                if (!allowedTypes.includes(image.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
+                    });
+                    return false;
+                }
+                if (image.size > 5120 * 1024) { // 5MB
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Image size must be less than 5MB.'
+                    });
+                    return false;
+                }
+            }
+
+            // Prepare FormData
+            let formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('name', name);
+            formData.append('message', message);
+            formData.append('rating', rating);
+            formData.append('status', status);
+            if (image) {
+                formData.append('image', image);
+            }
+
+            // AJAX request
+            $.ajax({
+                url: '{{ route("testimonial.store") }}',
+                method: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.success
+                    });
+                    // Reset + clear preview
+                    $("#edit-form")[0].reset();
+                    $("#edit-image-preview").hide().attr("src", "");
+                    $('#offcanvas_add_2').offcanvas('hide');
+                    table.ajax.reload(null, false);
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong.'
+                    });
+                }
+            });
+        });
+
+
+        // Edit button click event + form submission
+        $(document).on('click', '.edit-btn', function () {
+            var id = $(this).data('id');
+
+            // Fetch existing data
+            $.ajax({
+                url: '{{ route("testimonial.show", ":id") }}'.replace(':id', id),
+                method: 'GET',
+                success: function (data) {
+                    // Fill form fields
+                    if (data.image) {
+                        $("#edit-image-preview").attr("src", "/" + data.image).show();
+                    } else {
+                        $("#edit-image-preview").hide();
+                    }
+
+                    $("input[name='edit-rating'][value='" + data.rating + "']").prop("checked", true);
+                    $('#edit-status-input').val(data.status);
+                    $('#edit-name-input').val(data.name);
+                    $('#edit-message-input').val(data.message);
+                    $('#edit-form').attr('action', '{{ route("testimonial.update", ":id") }}'.replace(':id', id));
+
+                    // Show the offcanvas/modal
+                    $('#offcanvas_edit').offcanvas('show');
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong while fetching data.'
+                    });
+                }
+            });
+        });
+
+        // Edit form AJAX submission
+        $("#edit-form").submit(function (e) {
+            e.preventDefault();
+
+            let status = $("#edit-status-input").val();
+            let name = $("#edit-name-input").val();
+            let message = $("#edit-message-input").val();
+            let rating = $("input[name='edit-rating']:checked").val();
+            let image = $("#edit-image-input")[0].files[0];
+
+            // Validation
+            if (status === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Status is required.'
+                });
+                return false;
+            }
+
+            if (name === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'name is required.'
+                });
+                return false;
+            }
+
+            if (message === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'message is required.'
+                });
+                return false;
+            }
+
+            if (rating === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'rating is required.'
+                });
+                return false;
+            }
+
+            if (image) {
+                let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+                if (!allowedTypes.includes(image.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
+                    });
+                    return false;
+                }
+                if (image.size > 5120 * 1024) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Image size must be less than 5MB.'
+                    });
+                    return false;
+                }
+            }
+
+            // Prepare FormData
+            let formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('_method', 'PUT');
+            formData.append('name', name);
+            formData.append('message', message);
+            formData.append('rating', rating);
+            formData.append('status', status);
+            if (image) {
+                formData.append('image', image);
+            }
+
+            // AJAX request
+            $.ajax({
+                url: $("#edit-form").attr('action'),
+                method: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.success
+                    });
+                    // Reset + clear preview
+                    $("#edit-form")[0].reset();
+                    $("#edit-image-preview").hide().attr("src", "");
+                    $('#offcanvas_edit').offcanvas('hide');
+                    if (typeof table !== "undefined") {
+                        table.ajax.reload(null, false);
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong while updating.'
+                    });
+                }
+            });
+        });
+
+        // Delete form submission with SweetAlert confirmation
+        $(document).on('click', '.delete-btn', function (e) {
+            e.preventDefault();
+
+            let id = $(this).data('id');
+            let url = $(this).data('url');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This record will be deleted permanently!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            _method: 'DELETE'
+                        },
+                        success: function (response) {
+                            Swal.fire('Deleted!', response.message, 'success');
+                            $('#testimonial-table').DataTable().ajax.reload(); // reload table
+                        },
+                        error: function (xhr) {
+                            Swal.fire('Error!', 'Something went wrong.', 'error');
+                        }
+                    });
+                }
+            });
+        });
+
+
+        // Show success message from session (for delete)
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '{{ session("success") }}'
+            });
+        @endif
     </script>
 </body>
 

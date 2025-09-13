@@ -15,7 +15,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $categories = Category::all();
-        $products = Product::all();
+        $products_count = Product::count();
         if ($request->ajax()) {
             return DataTables::of(Product::query())
                 ->filterColumn('id', function ($query, $keyword) {
@@ -49,7 +49,7 @@ class ProductController extends Controller
         }
 
 
-        return view("admin.products.index", compact("categories", "products"));
+        return view("admin.products.index", compact("categories", "products_count"));
     }
 
     /**
