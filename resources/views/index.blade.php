@@ -199,62 +199,6 @@
         </section>
         <!-- service-section end -->
 
-        <!-- instagram-section -->
-        {{-- <section class="instagram-section">
-            <div class="outer-container">
-                <div class="sec-title">
-                    <h2>Follow Us On Instagram</h2>
-                    <p>Excepteur sint occaecat cupidatat</p>
-                    <span class="separator" style="background-image: url(assets/images/icons/separator-1.png);"></span>
-                </div>
-                <div class="six-item-carousel owl-carousel owl-theme owl-dots-none owl-nav-none">
-                    <figure class="image-box">
-                        <img src="assets/images/resource/instagram-1.jpg" alt="">
-                        <ul class="info-list clearfix">
-                            <li><a href="index-2.html"><i class="flaticon-heart"></i>450</a></li>
-                            <li><a href="index-2.html"><i class="flaticon-commentary"></i>320</a></li>
-                        </ul>
-                    </figure>
-                    <figure class="image-box">
-                        <img src="assets/images/resource/instagram-2.jpg" alt="">
-                        <ul class="info-list clearfix">
-                            <li><a href="index-2.html"><i class="flaticon-heart"></i>450</a></li>
-                            <li><a href="index-2.html"><i class="flaticon-commentary"></i>320</a></li>
-                        </ul>
-                    </figure>
-                    <figure class="image-box">
-                        <img src="assets/images/resource/instagram-3.jpg" alt="">
-                        <ul class="info-list clearfix">
-                            <li><a href="index-2.html"><i class="flaticon-heart"></i>450</a></li>
-                            <li><a href="index-2.html"><i class="flaticon-commentary"></i>320</a></li>
-                        </ul>
-                    </figure>
-                    <figure class="image-box">
-                        <img src="assets/images/resource/instagram-4.jpg" alt="">
-                        <ul class="info-list clearfix">
-                            <li><a href="index-2.html"><i class="flaticon-heart"></i>450</a></li>
-                            <li><a href="index-2.html"><i class="flaticon-commentary"></i>320</a></li>
-                        </ul>
-                    </figure>
-                    <figure class="image-box">
-                        <img src="assets/images/resource/instagram-5.jpg" alt="">
-                        <ul class="info-list clearfix">
-                            <li><a href="index-2.html"><i class="flaticon-heart"></i>450</a></li>
-                            <li><a href="index-2.html"><i class="flaticon-commentary"></i>320</a></li>
-                        </ul>
-                    </figure>
-                    <figure class="image-box">
-                        <img src="assets/images/resource/instagram-6.jpg" alt="">
-                        <ul class="info-list clearfix">
-                            <li><a href="index-2.html"><i class="flaticon-heart"></i>450</a></li>
-                            <li><a href="index-2.html"><i class="flaticon-commentary"></i>320</a></li>
-                        </ul>
-                    </figure>
-                </div>
-            </div>
-        </section> --}}
-        <!-- instagram-section end -->
-
         @include('layout.footer')
 </body><!-- End of .page_wrapper -->
 

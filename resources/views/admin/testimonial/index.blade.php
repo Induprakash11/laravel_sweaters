@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-@include('admin.layouts.head');
+@include('admin.layouts.head')
 
 <body>
 
@@ -9,11 +9,11 @@
     <div class="main-wrapper">
 
         <!-- Topbar Start -->
-        @include('admin.layouts.header');
+        @include('admin.layouts.header')
         <!-- Topbar End -->
 
         <!-- Sidenav Menu Start -->
-        @include('admin.layouts.sidebar');
+        @include('admin.layouts.sidebar')
         <!-- Sidenav Menu End -->
 
         <!-- ========================
@@ -98,7 +98,7 @@
             <!-- End Content -->
 
             <!-- Start Footer -->
-            @include('admin.layouts.footer');
+            @include('admin.layouts.footer')
             <!-- End Footer -->
 
         </div>

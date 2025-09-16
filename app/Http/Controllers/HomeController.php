@@ -29,7 +29,7 @@ class HomeController extends Controller
         $users = Auth::user();
 
         $banner = Cache::remember('banner', 3600, function () {
-            return Banner::query();
+            return Banner::all();
         });
 
         $profile = Cache::remember('profile', 3600, function () {
@@ -37,7 +37,7 @@ class HomeController extends Controller
         });
 
         $category = Cache::remember('category', 3600, function () {
-            return Category::query();
+            return Category::all();
         });
 
         $blogs = Cache::remember('blogs', 3600, function () {
@@ -49,7 +49,7 @@ class HomeController extends Controller
         });
 
         $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
-            return SocialMediaUrl::query();
+            return SocialMediaUrl::all();
         });
 
         return view("index", compact( "socialMediaUrl", "users", 'profile', "products", "category", "blogs", "banner"));
@@ -67,11 +67,11 @@ class HomeController extends Controller
         });
 
         $category = Cache::remember('category', 3600, function () {
-            return Category::query();
+            return Category::all();
         });
 
         $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
-            return SocialMediaUrl::query();
+            return SocialMediaUrl::all();
         });
 
         return view("about", compact("socialMediaUrl", "users", "profile", "category"));
@@ -90,11 +90,11 @@ class HomeController extends Controller
         });
 
         $category = Cache::remember('category', 3600, function () {
-            return Category::query();
+            return Category::all();
         });
 
         $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
-            return SocialMediaUrl::query();
+            return SocialMediaUrl::all();
         });
 
         return view("contact", compact( "socialMediaUrl", "users", "profile", "category"));
@@ -125,7 +125,7 @@ class HomeController extends Controller
         });
 
         $category = Cache::remember('category', 3600, function () {
-            return Category::query();
+            return Category::all();
         });
 
         $products = Cache::remember('products', 3600, function () {
@@ -133,7 +133,7 @@ class HomeController extends Controller
         });
 
         $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
-            return SocialMediaUrl::query();
+            return SocialMediaUrl::all();
         });
 
         $decode = decodeId($id);
@@ -153,7 +153,7 @@ class HomeController extends Controller
         });
 
         $category = Cache::remember('category', 3600, function () {
-            return Category::query();
+            return Category::all();
         });
 
         $products = Cache::remember('products', 3600, function () {
@@ -161,7 +161,7 @@ class HomeController extends Controller
         });
 
         $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
-            return SocialMediaUrl::query();
+            return SocialMediaUrl::all();
         });
 
         $decode = decodeId($id);
@@ -181,7 +181,7 @@ class HomeController extends Controller
         });
 
         $category = Cache::remember('category', 3600, function () {
-            return Category::query();
+            return Category::all();
         });
 
         $blogs = Cache::remember('blogs', 3600, function () {
@@ -189,7 +189,7 @@ class HomeController extends Controller
         });
 
         $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
-            return SocialMediaUrl::query();
+            return SocialMediaUrl::all();
         });
 
         return view("blog", compact( "socialMediaUrl", "users", 'profile', "category", "blogs"));
@@ -207,7 +207,7 @@ class HomeController extends Controller
         });
 
         $category = Cache::remember('category', 3600, function () {
-            return Category::query();
+            return Category::all();
         });
 
         $blogs = Cache::remember('blogs', 3600, function () {
@@ -215,7 +215,7 @@ class HomeController extends Controller
         });
 
         $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
-            return SocialMediaUrl::query();
+            return SocialMediaUrl::all();
         });
 
         $decode = decodeId($id);
@@ -232,15 +232,15 @@ class HomeController extends Controller
         });
 
         $category = Cache::remember('category', 3600, function () {
-            return Category::query();
+            return Category::all();
         });
 
         $events = Cache::remember('events', 3600, function () {
-            return EventReport::query();
+            return EventReport::all();
         });
 
         $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
-            return SocialMediaUrl::query();
+            return SocialMediaUrl::all();
         });
 
         return view('service', compact( 'events', 'socialMediaUrl', 'users', 'profile', 'category'));
@@ -256,15 +256,15 @@ class HomeController extends Controller
         });
 
         $category = Cache::remember('category', 3600, function () {
-            return Category::query();
+            return Category::all();
         });
 
         $testimonials = Cache::remember('testimonials', 3600, function () {
-            return TestimonialReport::query();
+            return TestimonialReport::all();
         });
 
         $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
-            return SocialMediaUrl::query();
+            return SocialMediaUrl::all();
         });
 
         return view('testimonial', compact( 'testimonials',  'socialMediaUrl', 'users', 'profile',  'category'));
@@ -280,7 +280,7 @@ class HomeController extends Controller
         });
 
         $category = Cache::remember('category', 3600, function () {
-            return Category::query();
+            return Category::all();
         });
 
         $products = Cache::remember('products', 3600, function () {
@@ -292,7 +292,7 @@ class HomeController extends Controller
         });
 
         $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
-            return SocialMediaUrl::query();
+            return SocialMediaUrl::all();
         });
 
         $decode = decodeId($id);
@@ -309,7 +309,7 @@ class HomeController extends Controller
         });
 
         $category = Cache::remember('category', 3600, function () {
-            return Category::query();
+            return Category::all();
         });
 
         $products = Cache::remember('products', 3600, function () {
@@ -321,7 +321,7 @@ class HomeController extends Controller
         });
 
         $socialMediaUrl = Cache::remember('socialMediaUrl', 3600, function () {
-            return SocialMediaUrl::query();
+            return SocialMediaUrl::all();
         });
 
         $decode = decodeId($id);

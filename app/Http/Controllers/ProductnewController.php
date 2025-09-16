@@ -17,7 +17,7 @@ class ProductnewController extends Controller
         $categories = Category::all();
         $productnew_count = Productnew::count();
         if ($request->ajax()) {
-            return DataTables::of(Productnew::query())
+            return DataTables::of(Productnew::select('id', 'date', 'category', 'product_name', 'specification', 'video_url', 'information', 'features', 'application', 'product_image', 'status'))
                 ->filterColumn('id', function ($query, $keyword) {
                     $query->where('id', $keyword);
                 })
@@ -30,15 +30,15 @@ class ProductnewController extends Controller
                 ->addColumn('action', function ($productnew) {
                     return '
                 <div class="d-flex gap-2">
-                    <a class="btn btn-icon btn-sm btn-warning p-2 shadow edit-btn" 
-                       data-bs-toggle="offcanvas" 
-                       data-bs-target="#offcanvas_edit" 
+                    <a class="btn btn-icon btn-sm btn-warning p-2 shadow edit-btn"
+                       data-bs-toggle="offcanvas"
+                       data-bs-target="#offcanvas_edit"
                        data-id="' . $productnew->id . '">
                         <i class="ti ti-pencil"></i>
                     </a>
-                    <button type="button" 
-                            class="btn btn-sm btn-danger delete-btn p-2" 
-                            data-id="' . $productnew->id . '" 
+                    <button type="button"
+                            class="btn btn-sm btn-danger delete-btn p-2"
+                            data-id="' . $productnew->id . '"
                             data-url="' . route('productnew.destroy', $productnew->id) . '">
                         <i class="ti ti-trash"></i>
                     </button>
