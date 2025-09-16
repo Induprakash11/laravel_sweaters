@@ -1,0 +1,6 @@
+- [x] Fix JavaScript in product.blade.php: correct form reset in create success
+- [x] Fix image MIME type validation to lowercase in create form
+- [x] Add relationship to Productnew model for category
+- [x] Update controller to load category relation and display name
+- [x] Add table variable check in create success
+- [ ] Test the AJAX add and edit functionality

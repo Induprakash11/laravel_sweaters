@@ -212,7 +212,7 @@
     <!-- /edit Event -->
 
     <!-- DataTables Scripts -->
-    
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             var table = $('#events-table').DataTable({
@@ -220,14 +220,18 @@
                 serverSide: true,
                 ajax: '{{ route("events.index") }}',
                 deferRender: true,
-                
+
                 pageLength: 10,
                 responsive: true,
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'image', name: 'image', orderable: false, searchable: false },
                     { data: 'title', name: 'title' },
-                    { data: 'description', name: 'description' },
+                    {
+                        data: 'description', name: 'description', render: function (data) {
+                            return data && data.length > 30 ? data.substr(0, 30) + '...' : data;
+                        }
+                    },
                     { data: 'status', name: 'status' },
                     { data: 'action', name: 'action', orderable: false, searchable: false }
                 ],
@@ -239,286 +243,286 @@
             });
         });
 
-            // Refresh button click event
-            $(document).on('click', '.refresh-btn', function () {
-                table.ajax.reload(null, false); // false = stay on same page
+        // Refresh button click event
+        $(document).on('click', '.refresh-btn', function () {
+            table.ajax.reload(null, false); // false = stay on same page
+        });
+
+        // Create form AJAX submission
+        $("#create-form").submit(function (e) {
+            e.preventDefault();
+
+            // Get values
+            let title = $("#title-input").val();
+            let description = $("#description-input").val();
+            let status = $("#status-input").val();
+            let image = $("#image-input")[0].files[0];
+
+            // Basic validation
+            if (status === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'status is required.'
+                });
+                return false;
+            }
+
+            if (title === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'title is required.'
+                });
+                return false;
+            }
+
+            if (description === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'description is required.'
+                });
+                return false;
+            }
+
+            // Image validation if provided
+            if (image) {
+                let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/PNG', 'image/JPG'];
+                if (!allowedTypes.includes(image.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
+                    });
+                    return false;
+                }
+                if (image.size > 5120 * 1024) { // 5MB
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Image size must be less than 5MB.'
+                    });
+                    return false;
+                }
+            }
+
+            // Prepare FormData
+            let formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('title', title);
+            formData.append('description', description);
+            formData.append('status', status);
+            if (image) {
+                formData.append('image', image);
+            }
+
+            // AJAX request
+            $.ajax({
+                url: '{{ route("events.store") }}',
+                method: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.success
+                    });
+                    // Reset + clear preview
+                    $("#edit-form")[0].reset();
+                    $("#edit-image-preview").hide().attr("src", "");
+                    $('#offcanvas_add_2').offcanvas('hide');
+                    table.ajax.reload(null, false);
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong.'
+                    });
+                }
             });
+        });
 
-            // Create form AJAX submission
-            $("#create-form").submit(function (e) {
-                e.preventDefault();
 
-                // Get values
-                let title = $("#title-input").val();
-                let description = $("#description-input").val();
-                let status = $("#status-input").val();
-                let image = $("#image-input")[0].files[0];
+        // Edit button click event + form submission
+        $(document).on('click', '.edit-btn', function () {
+            var id = $(this).data('id');
 
-                // Basic validation
-                if (status === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'status is required.'
-                    });
-                    return false;
-                }
-
-                if (title === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'title is required.'
-                    });
-                    return false;
-                }
-
-                if (description === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'description is required.'
-                    });
-                    return false;
-                }
-
-                // Image validation if provided
-                if (image) {
-                    let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/PNG', 'image/JPG'];
-                    if (!allowedTypes.includes(image.type)) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
-                        });
-                        return false;
+            // Fetch existing data
+            $.ajax({
+                url: '{{ route("events.show", ":id") }}'.replace(':id', id),
+                method: 'GET',
+                success: function (data) {
+                    // Fill form fields
+                    if (data.image) {
+                        $("#edit-image-preview").attr("src", "/" + data.image).show();
+                    } else {
+                        $("#edit-image-preview").hide();
                     }
-                    if (image.size > 5120 * 1024) { // 5MB
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Image size must be less than 5MB.'
-                        });
-                        return false;
-                    }
-                }
+                    $('#edit-status-input').val(data.status);
+                    $('#edit-title-input').val(data.title);
+                    $('#edit-description-input').val(data.description);
+                    $('#edit-form').attr('action', '{{ route("events.update", ":id") }}'.replace(':id', id));
 
-                // Prepare FormData
-                let formData = new FormData();
-                formData.append('_token', '{{ csrf_token() }}');
-                formData.append('title', title);
-                formData.append('description', description);
-                formData.append('status', status);
-                if (image) {
-                    formData.append('image', image);
+                    // Show the offcanvas/modal
+                    $('#offcanvas_edit').offcanvas('show');
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong while fetching data.'
+                    });
                 }
+            });
+        });
 
-                // AJAX request
-                $.ajax({
-                    url: '{{ route("events.store") }}',
-                    method: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: response.success
-                        });
-                        // Reset + clear preview
-                        $("#edit-form")[0].reset();
-                        $("#edit-image-preview").hide().attr("src", "");
-                        $('#offcanvas_add_2').offcanvas('hide');
+        // Edit form AJAX submission
+        $("#edit-form").submit(function (e) {
+            e.preventDefault();
+
+            let status = $("#edit-status-input").val();
+            let title = $("#edit-title-input").val();
+            let description = $("#edit-description-input").val();
+            let image = $("#edit-image-input")[0].files[0];
+
+            // Validation
+            if (status === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Status is required.'
+                });
+                return false;
+            }
+
+            if (title === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'title is required.'
+                });
+                return false;
+            }
+
+            if (description === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'description is required.'
+                });
+                return false;
+            }
+
+            if (image) {
+                let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+                if (!allowedTypes.includes(image.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
+                    });
+                    return false;
+                }
+                if (image.size > 5120 * 1024) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Image size must be less than 5MB.'
+                    });
+                    return false;
+                }
+            }
+
+            // Prepare FormData
+            let formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('_method', 'PUT');
+            formData.append('title', title);
+            formData.append('description', description);
+            formData.append('status', status);
+            if (image) {
+                formData.append('image', image);
+            }
+
+            // AJAX request
+            $.ajax({
+                url: $("#edit-form").attr('action'),
+                method: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.success
+                    });
+                    $("#edit-form")[0].reset();
+                    $("#edit-image-preview").hide().attr("src", "");
+                    $('#offcanvas_edit').offcanvas('hide');
+                    if (typeof table !== "undefined") {
                         table.ajax.reload(null, false);
-                    },
-                    error: function (xhr) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Something went wrong.'
-                        });
                     }
-                });
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong while updating.'
+                    });
+                }
             });
+        });
 
+        // Delete form submission with SweetAlert confirmation
+        $(document).on('click', '.delete-btn', function (e) {
+            e.preventDefault();
 
-            // Edit button click event + form submission
-            $(document).on('click', '.edit-btn', function () {
-                var id = $(this).data('id');
+            let id = $(this).data('id');
+            let url = $(this).data('url');
 
-                // Fetch existing data
-                $.ajax({
-                    url: '{{ route("events.show", ":id") }}'.replace(':id', id),
-                    method: 'GET',
-                    success: function (data) {
-                        // Fill form fields
-                        if (data.image) {
-                            $("#edit-image-preview").attr("src", "/" + data.image).show();
-                        } else {
-                            $("#edit-image-preview").hide();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This record will be deleted permanently!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            _method: 'DELETE'
+                        },
+                        success: function (response) {
+                            Swal.fire('Deleted!', response.message, 'success');
+                            $('#events-table').DataTable().ajax.reload(); // reload table
+                        },
+                        error: function (xhr) {
+                            Swal.fire('Error!', 'Something went wrong.', 'error');
                         }
-                        $('#edit-status-input').val(data.status);
-                        $('#edit-title-input').val(data.title);
-                        $('#edit-description-input').val(data.description);
-                        $('#edit-form').attr('action', '{{ route("events.update", ":id") }}'.replace(':id', id));
-
-                        // Show the offcanvas/modal
-                        $('#offcanvas_edit').offcanvas('show');
-                    },
-                    error: function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Something went wrong while fetching data.'
-                        });
-                    }
-                });
-            });
-
-            // Edit form AJAX submission
-            $("#edit-form").submit(function (e) {
-                e.preventDefault();
-
-                let status = $("#edit-status-input").val();
-                let title = $("#edit-title-input").val();
-                let description = $("#edit-description-input").val();
-                let image = $("#edit-image-input")[0].files[0];
-
-                // Validation
-                if (status === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Status is required.'
                     });
-                    return false;
                 }
-
-                if (title === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'title is required.'
-                    });
-                    return false;
-                }
-
-                if (description === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'description is required.'
-                    });
-                    return false;
-                }
-
-                if (image) {
-                    let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
-                    if (!allowedTypes.includes(image.type)) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
-                        });
-                        return false;
-                    }
-                    if (image.size > 5120 * 1024) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Image size must be less than 5MB.'
-                        });
-                        return false;
-                    }
-                }
-
-                // Prepare FormData
-                let formData = new FormData();
-                formData.append('_token', '{{ csrf_token() }}');
-                formData.append('_method', 'PUT');
-                formData.append('title', title);
-                formData.append('description', description);
-                formData.append('status', status);
-                if (image) {
-                    formData.append('image', image);
-                }
-
-                // AJAX request
-                $.ajax({
-                    url: $("#edit-form").attr('action'),
-                    method: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: response.success
-                        });
-                        $("#edit-form")[0].reset(); 
-                        $("#edit-image-preview").hide().attr("src", "");
-                        $('#offcanvas_edit').offcanvas('hide');
-                        if (typeof table !== "undefined") {
-                            table.ajax.reload(null, false);
-                        }
-                    },
-                    error: function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Something went wrong while updating.'
-                        });
-                    }
-                });
             });
+        });
 
-            // Delete form submission with SweetAlert confirmation
-            $(document).on('click', '.delete-btn', function (e) {
-                e.preventDefault();
 
-                let id = $(this).data('id');
-                let url = $(this).data('url');
-
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "This record will be deleted permanently!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: url,
-                            type: 'POST',
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                                _method: 'DELETE'
-                            },
-                            success: function (response) {
-                                Swal.fire('Deleted!', response.message, 'success');
-                                $('#events-table').DataTable().ajax.reload(); // reload table
-                            },
-                            error: function (xhr) {
-                                Swal.fire('Error!', 'Something went wrong.', 'error');
-                            }
-                        });
-                    }
-                });
+        // Show success message from session (for delete)
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '{{ session("success") }}'
             });
-
-
-            // Show success message from session (for delete)
-            @if(session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: '{{ session("success") }}'
-                });
-            @endif
+        @endif
     </script>
 </body>
 

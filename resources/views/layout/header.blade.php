@@ -81,6 +81,24 @@
                       @endforeach
                     </ul>
                   </li>
+                  <li class="dropdown {{ request()->is('product1/*') ? 'current' : '' }}">
+                    <a>
+                      @if (request()->is('product1/*') && isset($currentCategory))
+                        {{ $currentCategory->name }}
+                      @else
+                        Product_1 <span>Hot</span>
+                      @endif
+                    </a>
+                    <ul>
+                      @foreach ($category as $cate)
+                        <li>
+                          <a href="{{ url('product1/' . encodeId($cate->id)) }}">
+                            {{ $cate->name }}
+                          </a>
+                        </li>
+                      @endforeach
+                    </ul>
+                  </li>
 
                   <li class="{{ request()->routeIs('blog') ? 'current' : '' }}"><a href="{{ route('blog') }}">Blog</a>
                   </li>

@@ -27,7 +27,7 @@
                 <div class="d-flex align-items-center justify-content-between gap-2 mb-4 flex-wrap">
                     <div>
                         <h4 class="mb-1">Products<span
-                                class="badge badge-soft-primary ms-2">{{ $products_count }}</span></h4>
+                                class="badge badge-soft-primary ms-2">{{ $productnew_count }}</span></h4>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 p-0">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
@@ -64,17 +64,18 @@
                             <div class="card-body">
 
                                 <div class="table-responsive">
-                                    <table id="products-table" class="table mb-0">
+                                    <table id="productnew-table" class="table mb-0">
                                         <thead>
                                             <tr>
                                                 <th>Id</th>
                                                 <th>Category</th>
-                                                <th>Image</th>
-                                                <th>Brand</th>
-                                                <th>Gauge</th>
-                                                <th>Construction</th>
-                                                <th>Fabric</th>
-                                                <th>Moq</th>
+                                                <th>Product_name</th>
+                                                <th>Product_image</th>
+                                                <th>specification</th>
+                                                <th>information</th>
+                                                <th>video_url</th>
+                                                <th>Features</th>
+                                                <th>application</th>
                                                 <th>Status</th>
                                                 <th>Action</th>
                                             </tr>
@@ -132,36 +133,44 @@
 
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="brand-input" class="form-label">Brand</label>
-                            <input type="text" class="form-control" id="brand-input" name="brand"
-                                placeholder="Enter brand">
+                            <label for="product_name-input" class="form-label">Product_name</label>
+                            <input type="text" class="form-control" id="product_name-input" name="product_name"
+                                placeholder="Enter product_name">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="gauge-input" class="form-label">Gauge</label>
-                            <input type="text" class="form-control" id="gauge-input" name="gauge"
-                                placeholder="Enter gauge">
+                            <label for="specification-input" class="form-label">Specification</label>
+                            <input type="text" class="form-control" id="specification-input" name="specification"
+                                placeholder="Enter specification">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="construction-input" class="form-label">Construction</label>
-                            <input type="text" class="form-control" id="construction-input" name="construction"
-                                placeholder="Enter construction">
+                            <label for="video_url-input" class="form-label">Video_url</label>
+                            <input type="text" class="form-control" id="video_url-input" name="video_url"
+                                placeholder="Enter video_url">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="fabric-input" class="form-label">Fabric</label>
-                            <input type="text" class="form-control" id="fabric-input" name="fabric"
-                                placeholder="Enter fabric">
+                            <label for="information-input" class="form-label">Information</label>
+                            <input type="text" class="form-control" id="information-input" name="information"
+                                placeholder="Enter information">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="moq-input" class="form-label">Moq</label>
-                            <input type="text" class="form-control" id="moq-input" name="moq" placeholder="Enter MOQ">
+                            <label for="features-input" class="form-label">Features</label>
+                            <input type="text" class="form-control" id="features-input" name="features"
+                                placeholder="Enter features">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label for="application-input" class="form-label">Application</label>
+                            <input type="text" class="form-control" id="application-input" name="application"
+                                placeholder="Enter APPLICATION">
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -175,8 +184,8 @@
                     </div>
                     <div class="col-lg-12">
                         <div class="mb-3">
-                            <label for="image-input" class="form-label">Image</label>
-                            <input class="form-control" type="file" id="image-input" name="image">
+                            <label for="product_image-input" class="form-label">Product_image</label>
+                            <input class="form-control" type="file" id="product_image-input" name="product_image">
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-end">
@@ -218,37 +227,44 @@
 
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="brand-input" class="form-label">Brand</label>
-                            <input type="text" class="form-control" id="edit-brand-input" name="brand"
-                                placeholder="Enter brand">
+                            <label for="product_name-input" class="form-label">Product_name</label>
+                            <input type="text" class="form-control" id="edit-product_name-input" name="product_name"
+                                placeholder="Enter product_name">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="gauge-input" class="form-label">Gauge</label>
-                            <input type="text" class="form-control" id="edit-gauge-input" name="gauge"
-                                placeholder="Enter gauge">
+                            <label for="specification-input" class="form-label">Specification</label>
+                            <input type="text" class="form-control" id="edit-specification-input" name="specification"
+                                placeholder="Enter specification">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="construction-input" class="form-label">Construction</label>
-                            <input type="text" class="form-control" id="edit-construction-input" name="construction"
-                                placeholder="Enter construction">
+                            <label for="video_url-input" class="form-label">Video_url</label>
+                            <input type="text" class="form-control" id="edit-video_url-input" name="video_url"
+                                placeholder="Enter video_url">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="fabric-input" class="form-label">Fabric</label>
-                            <input type="text" class="form-control" id="edit-fabric-input" name="fabric"
-                                placeholder="Enter fabric">
+                            <label for="information-input" class="form-label">Information</label>
+                            <input type="text" class="form-control" id="edit-information-input" name="information"
+                                placeholder="Enter information">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="mb-3">
-                            <label for="moq-input" class="form-label">Moq</label>
-                            <input type="text" class="form-control" id="edit-moq-input" name="moq"
-                                placeholder="Enter MOQ">
+                            <label for="features-input" class="form-label">Features</label>
+                            <input type="text" class="form-control" id="edit-features-input" name="features"
+                                placeholder="Enter features">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label for="application-input" class="form-label">Application</label>
+                            <input type="text" class="form-control" id="edit-application-input" name="application"
+                                placeholder="Enter APPLICATION">
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -262,9 +278,9 @@
                     </div>
                     <div class="col-lg-12">
                         <div class="mb-3">
-                            <label for="image-input" class="form-label">Image</label>
+                            <label for="product_image-input" class="form-label">Product_image</label>
                             <img id="edit-image-preview" src="" alt="Preview" style="max-height:80px; display:none;">
-                            <input class="form-control" type="file" id="edit-image-input" name="image">
+                            <input class="form-control" type="file" id="edit-product_image-input" name="product_image">
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-end">
@@ -282,23 +298,43 @@
     <script>
         var table;
         document.addEventListener("DOMContentLoaded", function () {
-                table = $('#products-table').DataTable({
+            table = $('#productnew-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: '{{ route("products.index") }}',
+                ajax: '{{ route("productnew.index") }}',
                 deferRender: true,
-                
                 pageLength: 10,
                 responsive: true,
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'category', name: 'category' },
-                    { data: 'image', name: 'image', orderable: false, searchable: false },
-                    { data: 'brand', name: 'brand' },
-                    { data: 'gauge', name: 'gauge' },
-                    { data: 'construction', name: 'construction' },
-                    { data: 'fabric', name: 'fabric' },
-                    { data: 'moq', name: 'moq' },
+                    { data: 'product_name', name: 'product_name' },
+                    { data: 'product_image', name: 'product_image', orderable: false, searchable: false },
+                    {
+                        data: 'specification', name: 'specification', render: function (data) {
+                            return data && data.length > 30 ? data.substr(0, 30) + '...' : data;
+                        }
+                    },
+                    {
+                        data: 'video_url', name: 'video_url', render: function (data) {
+                            return data && data.length > 30 ? data.substr(0, 30) + '...' : data;
+                        }
+                    },
+                    {
+                        data: 'information', name: 'information', render: function (data) {
+                            return data && data.length > 30 ? data.substr(0, 30) + '...' : data;
+                        }
+                    },
+                    {
+                        data: 'features', name: 'features', render: function (data) {
+                            return data && data.length > 30 ? data.substr(0, 30) + '...' : data;
+                        }
+                    },
+                    {
+                        data: 'application', name: 'application', render: function (data) {
+                            return data && data.length > 30 ? data.substr(0, 30) + '...' : data;
+                        }
+                    },
                     { data: 'status', name: 'status' },
                     { data: 'action', name: 'action', orderable: false, searchable: false }
                 ],
@@ -311,186 +347,62 @@
 
         // Refresh button click event
         $(document).on('click', '.refresh-btn', function () {
-            table.ajax.reload(null, false); // false = stay on same page
+            table.ajax.reload(null, true);
         });
 
         // Create form AJAX submission
         $("#create-form").submit(function (e) {
             e.preventDefault();
 
-            // Get values
-            let category = $("#category-input").val();
-            let brand = $("#brand-input").val();
-            let gauge = $("#gauge-input").val();
-            let construction = $("#construction-input").val();
-            let fabric = $("#fabric-input").val();
-            let moq = $("#moq-input").val();
-            let status = $("#status-input").val();
-            let image = $("#image-input")[0].files[0];
+            let formData = new FormData(this);
 
-            // Basic validation
-            if (status === "") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'status is required.'
-                });
-                return false;
-            }
-
-            if (category === "") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'category is required.'
-                });
-                return false;
-            }
-
-            if (brand === "") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'brand is required.'
-                });
-                return false;
-            }
-
-            if (gauge === "") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'gauge is required.'
-                });
-                return false;
-            }
-
-            if (construction === "") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'construction is required.'
-                });
-                return false;
-            }
-
-            if (fabric === "") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'fabric is required.'
-                });
-                return false;
-            }
-
-            if (moq === "") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'moq is required.'
-                });
-                return false;
-            }
-
-            // Image validation if provided
-            if (image) {
-                let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/PNG', 'image/JPG'];
-                if (!allowedTypes.includes(image.type)) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
-                    });
-                    return false;
-                }
-                if (image.size > 5120 * 1024) { // 5MB
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Image size must be less than 5MB.'
-                    });
-                    return false;
-                }
-            }
-
-            // Prepare FormData
-            let formData = new FormData();
-            formData.append('_token', '{{ csrf_token() }}');
-            formData.append('category', category);
-            formData.append('brand', brand);
-            formData.append('gauge', gauge);
-            formData.append('construction', construction);
-            formData.append('fabric', fabric);
-            formData.append('moq', moq);
-            formData.append('status', status);
-            if (image) {
-                formData.append('image', image);
-            }
-
-            // AJAX request
             $.ajax({
-                url: '{{ route("products.store") }}',
+                url: '{{ route("productnew.store") }}',
                 method: "POST",
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function (response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: response.success
-                    });
-                    // Reset + clear preview
-                    $("#edit-form")[0].reset();
+                    Swal.fire({ icon: 'success', title: 'Success', text: response.success });
+                    $("#create-form")[0].reset();
                     $("#edit-image-preview").hide().attr("src", "");
                     $('#offcanvas_add_2').offcanvas('hide');
                     table.ajax.reload(null, false);
                 },
-                error: function (xhr) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Something went wrong.'
-                    });
+                error: function () {
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong.' });
                 }
             });
         });
 
-
-        // Edit button click event + form submission
+        // Edit button click event
         $(document).on('click', '.edit-btn', function () {
             var id = $(this).data('id');
-
-            // Fetch existing data
             $.ajax({
-                url: '{{ route("products.show", ":id") }}'.replace(':id', id),
+                url: '{{ route("productnew.show", ":id") }}'.replace(':id', id),
                 method: 'GET',
                 success: function (data) {
-                    // Fill form fields
-                    if (data.image) {
-                        $("#edit-image-preview").attr("src", "/" + data.image).show();
+                    if (data.product_image) {
+                        $("#edit-product_image-preview").attr("src", "/" + data.product_image).show();
                     } else {
-                        $("#edit-image-preview").hide();
+                        $("#edit-product_image-preview").hide();
                     }
 
                     $('#edit-status-input').val(data.status);
-                    $('#edit-gauge-input').val(data.gauge);
-                    $('#edit-construction-input').val(data.construction);
-                    $('#edit-fabric-input').val(data.fabric);
-                    $('#edit-moq-input').val(data.moq)
+                    $('#edit-product_name-input').val(data.product_name);
+                    $('#edit-video_url-input').val(data.video_url);
+                    $('#edit-information-input').val(data.information);
+                    $('#edit-features-input').val(data.features);
+                    $('#edit-application-input').val(data.application);
                     $('#edit-category-input').val(data.category);
-                    $('#edit-brand-input').val(data.brand);
-                    $('#edit-form').attr('action', '{{ route("products.update", ":id") }}'.replace(':id', id));
+                    $('#edit-specification-input').val(data.specification);
+                    $('#edit-form').attr('action', '{{ route("productnew.update", ":id") }}'.replace(':id', id));
 
-                    // Show the offcanvas/modal
-                    $('#offcanvas_edit').offcanvas('show');
+                    let offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvas_edit'));
+                    offcanvas.show();
                 },
                 error: function () {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Something went wrong while fetching data.'
-                    });
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong while fetching data.' });
                 }
             });
         });
@@ -498,116 +410,9 @@
         // Edit form AJAX submission
         $("#edit-form").submit(function (e) {
             e.preventDefault();
-
-            let status = $("#edit-status-input").val();
-            let category = $("#edit-category-input").val();
-            let brand = $("#edit-brand-input").val();
-            let gauge = $("#edit-gauge-input").val();
-            let construction = $("#edit-construction-input").val();
-            let fabric = $("#edit-fabric-input").val();
-            let moq = $("#edit-moq-input").val();
-            let image = $("#edit-image-input")[0].files[0];
-
-            // Validation
-            if (status === "") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Status is required.'
-                });
-                return false;
-            }
-
-            if (category === "") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'category is required.'
-                });
-                return false;
-            }
-
-            if (brand === "") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'brand is required.'
-                });
-                return false;
-            }
-
-            if (gauge === "") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'gauge is required.'
-                });
-                return false;
-            }
-
-            if (construction === "") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'construction is required.'
-                });
-                return false;
-            }
-
-            if (fabric === "") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'fabric is required.'
-                });
-                return false;
-            }
-
-            if (moq === "") {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'moq is required.'
-                });
-                return false;
-            }
-
-            if (image) {
-                let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
-                if (!allowedTypes.includes(image.type)) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Invalid image type. Only JPEG, PNG, JPG, GIF allowed.'
-                    });
-                    return false;
-                }
-                if (image.size > 5120 * 1024) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Image size must be less than 5MB.'
-                    });
-                    return false;
-                }
-            }
-
-            // Prepare FormData
-            let formData = new FormData();
-            formData.append('_token', '{{ csrf_token() }}');
+            let formData = new FormData(this);
             formData.append('_method', 'PUT');
-            formData.append('category', category);
-            formData.append('gauge', gauge);
-            formData.append('construction', construction);
-            formData.append('fabric', fabric);
-            formData.append('moq', moq);
-            formData.append('brand', brand);
-            formData.append('status', status);
-            if (image) {
-                formData.append('image', image);
-            }
 
-            // AJAX request
             $.ajax({
                 url: $("#edit-form").attr('action'),
                 method: "POST",
@@ -615,36 +420,23 @@
                 processData: false,
                 contentType: false,
                 success: function (response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: response.success
-                    });
-                    // Reset + clear preview
+                    Swal.fire({ icon: 'success', title: 'Success', text: response.success });
                     $("#edit-form")[0].reset();
                     $("#edit-image-preview").hide().attr("src", "");
                     $('#offcanvas_edit').offcanvas('hide');
-                    if (typeof table !== "undefined") {
-                        table.ajax.reload(null, false);
-                    }
+                    table.ajax.reload(null, false);
                 },
                 error: function () {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Something went wrong while updating.'
-                    });
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong while updating.' });
                 }
             });
         });
 
-        // Delete form submission with SweetAlert confirmation
+        // Delete form submission
         $(document).on('click', '.delete-btn', function (e) {
             e.preventDefault();
 
-            let id = $(this).data('id');
             let url = $(this).data('url');
-
             Swal.fire({
                 title: 'Are you sure?',
                 text: "This record will be deleted permanently!",
@@ -664,9 +456,9 @@
                         },
                         success: function (response) {
                             Swal.fire('Deleted!', response.message, 'success');
-                            $('#products-table').DataTable().ajax.reload(); // reload table
+                            table.ajax.reload(null, false);
                         },
-                        error: function (xhr) {
+                        error: function () {
                             Swal.fire('Error!', 'Something went wrong.', 'error');
                         }
                     });
@@ -674,16 +466,12 @@
             });
         });
 
-
-        // Show success message from session (for delete)
+        // Show success message from session (delete)
         @if(session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: '{{ session("success") }}'
-            });
+            Swal.fire({ icon: 'success', title: 'Success', text: '{{ session("success") }}' });
         @endif
     </script>
+
 </body>
 
 </html>

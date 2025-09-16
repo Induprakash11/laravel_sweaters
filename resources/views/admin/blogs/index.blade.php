@@ -221,14 +221,18 @@
                 serverSide: true,
                 ajax: '{{ route("blogs.index") }}',
                 deferRender: true,
-                
+
                 pageLength: 10,
                 responsive: true,
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'image', name: 'image', orderable: false, searchable: false },
                     { data: 'title', name: 'title' },
-                    { data: 'message', name: 'message' },
+                    {
+                        data: 'message', name: 'message', render: function (data) {
+                            return data && data.length > 30 ? data.substr(0, 30) + '...' : data;
+                        }
+                    },
                     { data: 'status', name: 'status' },
                     { data: 'action', name: 'action', orderable: false, searchable: false }
                 ],

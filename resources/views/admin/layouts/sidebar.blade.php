@@ -46,6 +46,10 @@
                                     class="ti ti-shopping-cart"></i><span>Product</span></a>
                         </li>
                         <li class="submenu">
+                            <a href="{{ route('productnew.index') }}" class="{{ request()->routeIs('product.index') ? 'active' : '' }}"><i
+                                    class="ti ti-shopping-cart"></i><span>Product1</span></a>
+                        </li>
+                        <li class="submenu">
                             <a href="{{ route('category.index') }}" class="{{ request()->routeIs('category.index') ? 'active' : '' }}"><i
                                     class="ti ti-chart-pie"></i><span>Category</span></a>
                         </li>
